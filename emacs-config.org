@@ -1,0 +1,651 @@
+#+TITLE: Emacs-config
+#+STARTUP: overview
+* Init-Config
+** early-init.el
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/early-init.el
+ ;; -*- lexical-binding: t -*-
+  (setq gc-cons-threshold most-positive-fixnum)
+  (setq gc-cons-percentage 0.6)
+  (setq native-comp-deferred-compilation nil ;; obsolete since 29.1
+	native-comp-jit-compilation nil)
+
+  (setq load-prefer-newer noninteractive)
+  (when (getenv-internal "DEBUG")
+    (setq init-file-debug t
+	  debug-on-error t))
+
+  (setq package-enable-at-startup nil)
+  (setq use-package-enable-imenu-support t)
+
+  (setq load-prefer-newer noninteractive)
+
+  (setq frame-inhibit-implied-resize t)
+
+  ;; Faster to disable these here (before they've been initialized)
+  (push '(menu-bar-lines . 0) default-frame-alist)
+  (push '(tool-bar-lines . 0) default-frame-alist)
+  (push '(vertical-scroll-bars) default-frame-alist)
+  (when (featurep 'ns)
+    (push '(ns-transparent-titlebar . t) default-frame-alist))
+  (setq-default mode-line-format nil)
+
+#+END_SRC
+
+** init.el
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+   ;; -*- lexical-binding: t -*-
+  ;; Defer garbage collection further back in the startup process
+  (setq gc-cons-threshold most-positive-fixnum)
+
+  ;; Prevent flashing of unstyled modeline at startup
+  (setq-default mode-line-format nil)
+
+  ;; Don't pass case-insensitive to `auto-mode-alist'
+  (setq auto-mode-case-fold nil)
+
+  (unless (or (daemonp) noninteractive init-file-debug)
+    ;; Suppress file handlers operations at startup
+    ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
+    (let ((old-value file-name-handler-alist))
+      (setq file-name-handler-alist nil)
+      (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
+      (add-hook 'emacs-startup-hook
+        (lambda ()
+          "Recover file name handlers."
+          (setq file-name-handler-alist
+            (delete-dups (append file-name-handler-alist old-value))))
+        101)))
+
+
+  (use-package gcmh
+    :ensure t
+    :diminish
+    :hook (emacs-startup . gcmh-mode)
+    :init
+    (setq gcmh-idle-delay 'auto
+      gcmh-auto-idle-delay-factor 10
+      gcmh-high-cons-threshold #x1000000)) ;; 16MB
+
+
+  (setq custom-file (expand-file-name "~/.emacs.d/custom.el"))
+  (load custom-file 'no-error 'no-message)
+#+END_SRC
+
+* Basic
+** use-package
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  (setq package-archives '(("gnu" . "https://mirrors.ustc.edu.cn/elpa/gnu/")
+			   ("melpa" . "https://mirrors.ustc.edu.cn/elpa/melpa/")
+			   ("nongnu" . "https://mirrors.ustc.edu.cn/elpa/nongnu/")))
+  (package-initialize)
+  ;;防止反复调用 package-refresh-contents 会影响加载速度
+  (when (not package-archive-contents)
+    (package-refresh-contents))
+
+#+END_SRC
+
+ end-line
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  ;; -------------- basic  end hear -----------------------------
+#+END_SRC
+
+** usefuel setting
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  ;; 把 yes 和 no 变成 y 和 n
+  (fset 'yes-or-no-p 'y-or-n-p)
+
+  ;; 设置 tab 键
+  (setq-default indent-tabs-mode nil)
+  (setq-default tab-width 4)
+  (setq-default standard-indent 4)
+  ;; 关闭自动保存 #
+  (setq auto-save-default nil)
+  ;; 关闭备份 ~
+  (setq  make-backup-files nil)
+#+END_SRC
+
+记住光标历史，记住上个命令,自动 *revert buffer*
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package savehist
+    :ensure nil
+    :hook (after-init . savehist-mode)
+    :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
+                history-length 1000
+                savehist-additional-variables '(mark-ring
+                                                global-mark-ring
+                                                search-ring
+                                                regexp-search-ring
+                                                extended-command-history)
+                savehist-autosave-interval 300)
+    )
+
+  (use-package saveplace
+    :ensure nil
+    :hook (after-init . save-place-mode))
+  (use-package autorevert
+    :ensure nil
+    :diminish
+    :hook (after-init . global-auto-revert-mode))
+
+#+END_SRC
+
+** Rime 输入法
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package rime
+    :defer t
+    :ensure t
+    :config
+    (setq rime-disable-predicates
+          '(meow-motion-mode-p
+            meow-normal-mode-p
+            rime-predicate-current-uppercase-letter-p)) ;; normal 模式自动进入临时英文模式
+    :custom
+    (default-input-method "rime"))
+#+end_src
+
+* Completion
+
+** 括号补全
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  ;; (electric-pair-mode 1)
+  ;; (setq electric-pair-pairs '(
+  ;;                             (?\" . ?\")
+  ;;                             (?\' . ?\')
+  ;;                             (?\{ . ?\})
+  ;;                             (?\[ . ?\])
+  ;;                             (?\( . ?\))))
+
+  (use-package smartparens
+    :ensure t
+    :config
+    (smartparens-global-mode)
+    )
+  (use-package highlight-parentheses
+    :ensure t
+    :init
+    (show-paren-mode 0)
+    :config
+    (setq highlight-parentheses-highlight-adjacent 1
+          highlight-parentheses-attributes '((:box (:line-width (-1 . -1))))
+          highlight-parentheses-colors nil
+          highlight-parentheses-delay 0.03)
+    (global-highlight-parentheses-mode)
+    )
+
+  (use-package rainbow-delimiters
+    :ensure t
+    :hook (prog-mode . rainbow-delimiters-mode)
+    )
+
+#+END_SRC
+
+** Company
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package company
+    :config
+    (setq company-idle-delay 0))
+
+  (add-hook 'after-init-hook 'global-company-mode)
+  (setq company-minimum-prefix-length 2)
+  (define-key company-active-map (kbd "C-n") 'company-select-next)
+  (define-key company-active-map (kbd "C-p") 'company-select-previous)
+  ;; 安装 vertico 实现 minibuffer 的补全
+  (use-package vertico
+    :ensure t
+    :hook (after-init . vertico-mode)
+    :config
+    (setq vertico-resize nil
+          vertico-count 17
+          vertico-cycle t))
+#+END_SRC
+
+** 搜索三剑客
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package orderless
+    :after vertico
+    :ensure t
+    :config
+    (setq completion-styles '(orderless)))
+  ;; 显示信息，比如变量值
+  (use-package marginalia
+    :after vertico
+    :ensure t
+    :config
+    (marginalia-mode t))
+
+  (use-package embark
+    :defer t
+    :ensure t
+    :bind
+    ("C-;" . embark-act))
+  (setq prefix-help-command 'embark-prefix-help-command)
+
+  (use-package consult
+    :ensure t
+    :bind ("C-s" . consult-line))
+
+#+END_SRC
+
+** Yasnipppet
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package yasnippet
+    :ensure t
+    :config
+    (progn 
+    (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+    (yas-global-mode 1)
+    )
+    :hook (prog-mode-hook . yas-minor-mode))
+#+END_SRC
+* UI
+** Themes
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (set-face-attribute 'default nil :height 160)
+  (add-to-list 'default-frame-alist '(alpha-background . 95))
+  (global-display-line-numbers-mode t)
+  (use-package doom-themes
+    :demand t
+    :ensure t
+    :config
+    (setq doom-themes-enable-bold t
+          doom-themes-enable-italic t)
+    :init (load-theme 'doom-one t))
+  (use-package all-the-icons
+    :defer t
+    :ensure t
+    :if (display-graphic-p)) ;; 第一次运行时, M-x all-the-icon-install-fonts 安装字体.
+
+  (use-package all-the-icons-nerd-fonts
+    :ensure t)
+
+  ;; :init (load-theme 'doom-opera-light t))
+#+end_src
+
+** doomline
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+(use-package minions
+  :defer t
+  :ensure t
+  :hook doom-modeline-mode)
+(use-package doom-modeline
+  :ensure t
+  :hook (after-init . doom-modeline-mode)
+  :custom
+  (doom-modeline-unicode-fallback t)
+  :config
+  (setq doom-modeline-height 1) ; optional
+  (custom-set-faces
+   '(mode-line ((t (:height 1.2))))
+   '(mode-line-active ((t (:height 0.85)))) ; For 29+
+   '(mode-line-inactive ((t (:height 0.85))))))
+(use-package which-key
+  :defer nil
+  :ensure t
+  :custom (which-key-idle-delay 1)
+  :config (which-key-mode))
+    
+#+end_src
+
+** Dashboard
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+
+  ;; 
+  (setq inhibit-startup-screen t)
+  
+  (use-package dashboard
+  :ensure t
+  :init
+  (setq dashboard-banner-logo-title "Here is Elizahone")
+  (setq dashboard-center-content t)
+  (setq dashboard-items '((recents   . 5)
+                          (bookmarks . 5)
+                          (projects  . 3)
+                          (agenda    . 3)))
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-heading-shortcut-format " [%s]")
+  :config
+  (dashboard-setup-startup-hook))
+
+#+end_src
+** Highlight-indentation
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package highlight-indent-guides
+    :defer t
+    :ensure t
+    :config
+    (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+
+#+end_src
+** Popper
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+   (use-package popper
+    :ensure t
+    :defines popper-echo-dispatch-actions
+    :commands popper-group-by-directory
+    :bind (:map popper-mode-map
+                ("s-`" . popper-toggle-latest)
+                ("s-o"   . popper-cycle)
+                ("M-`" . popper-toggle-type))
+    :hook (emacs-startup . popper-mode)
+    :init
+    (setq popper-reference-buffers
+          '("\\*Messages\\*"
+            "Output\\*$" "\\*Pp Eval Output\\*$"
+            "\\*Compile-Log\\*"
+            "\\*Completions\\*"
+            "\\*Warnings\\*"
+            "\\*Flymake diagnostics.*\\*"
+            "\\*Async Shell Command\\*"
+            "\\*Apropos\\*"
+            "\\*Backtrace\\*"
+            "\\*prodigy\\*"
+            "\\*Calendar\\*"
+            "\\*Embark Actions\\*"
+            "\\*Finder\\*"
+            "\\*Kill Ring\\*"
+            "\\*Embark Export:.*\\*"
+            "\\*Edit Annotation.*\\*"
+            "\\*Flutter\\*"
+            bookmark-bmenu-mode
+            lsp-bridge-ref-mode
+            comint-mode
+            compilation-mode
+            help-mode helpful-mode
+            tabulated-list-mode
+            Buffer-menu-mode
+            occur-mode
+            gnus-article-mode devdocs-mode
+            grep-mode occur-mode rg-mode deadgrep-mode ag-mode pt-mode
+            ivy-occur-mode ivy-occur-grep-mode
+            process-menu-mode list-environment-mode cargo-process-mode
+            youdao-dictionary-mode osx-dictionary-mode fanyi-mode
+
+            "^\\*eshell.*\\*.*$" eshell-mode
+            "^\\*shell.*\\*.*$"  shell-mode
+            "^\\*terminal.*\\*.*$" term-mode
+            "^\\*vterm.*\\*.*$"  vterm-mode
+            "^\\*R.*\\*.*$"  ess-R-mode
+            
+
+            "\\*DAP Templates\\*$" dap-server-log-mode
+            "\\*ELP Profiling Restuls\\*" profiler-report-mode
+            "\\*Flycheck errors\\*$" " \\*Flycheck checker\\*$"
+            "\\*Paradox Report\\*$" "\\*package update results\\*$" "\\*Package-Lint\\*$"
+            "\\*[Wo]*Man.*\\*$"
+            "\\*ert\\*$" overseer-buffer-mode
+            "\\*gud-debug\\*$"
+            "\\*lsp-help\\*$" "\\*lsp session\\*$"
+            "\\*quickrun\\*$"
+            "\\*tldr\\*$"
+            "\\*vc-.*\\*$"
+            "\\*eldoc\\*"
+            "^\\*elfeed-entry\\*$"
+            "^\\*macro expansion\\**"
+
+            "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"
+            "\\*Gofmt Errors\\*$" "\\*Go Test\\*$" godoc-mode
+            "\\*docker-containers\\*" "\\*docker-images\\*" "\\*docker-networks\\*" "\\*docker-volumes\\*"
+            "\\*prolog\\*" inferior-python-mode inf-ruby-mode swift-repl-mode
+            "\\*rustfmt\\*$" rustic-compilation-mode rustic-cargo-clippy-mode
+            rustic-cargo-outdated-mode rustic-cargo-test-mode))
+
+    (when (display-grayscale-p)
+      (setq popper-mode-line
+            '(:eval
+              (concat
+               (propertize " " 'face 'mode-line-emphasis)
+               'mode-line-emphasis)
+               (propertize " " 'face 'mode-line-emphasis))))
+
+    (setq popper-echo-dispatch-actions t)
+    (setq popper-group-function nil)
+    :config
+    (popper-echo-mode 1)
+
+    (with-no-warnings
+      (defun my-popper-fit-window-height (win)
+        "Determine the height of popup window WIN by fitting it to the buffer's content."
+        (fit-window-to-buffer
+         win
+         (floor (frame-height) 3)
+         (floor (frame-height) 3)))
+      (setq popper-window-height #'my-popper-fit-window-height)
+
+      (defun popper-close-window-hack (&rest _)
+        "Close popper window via `C-g'."
+        ;; `C-g' can deactivate region
+        (when (and (called-interactively-p 'interactive)
+                   (not (region-active-p))
+                   popper-open-popup-alist)
+          (let ((window (caar popper-open-popup-alist)))
+            (when (window-live-p window)
+              (delete-window window)))))
+      (advice-add #'keyboard-quit :before #'popper-close-window-hack)))
+
+#+end_src
+** Treemacs
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package treemacs
+    :ensure t)
+#+end_src
+* Orgmode
+
+** org-modern
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  (setq org-image-actual-width nil)
+  (require 'org-tempo) ;; 增加模板
+  (add-hook 'org-mode-hook
+        (lambda () (add-hook 'after-save-hook #'org-babel-tangle
+                 :append :local)))
+  (use-package org-modern
+    :ensure t
+    :init
+    (add-hook 'org-mode-hook #'org-indent-mode)
+    :config
+    (with-eval-after-load 'org (global-org-modern-mode)))
+#+END_SRC
+* Meow
+
+** 按键绑定
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (defun meow-setup ()
+  (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+  (meow-motion-overwrite-define-key
+   '("j" . meow-next)
+   '("k" . meow-prev)
+   '("<escape>" . ignore)
+   '("C-;" . ignore))
+  (meow-leader-define-key
+   ;; SPC j/k will run the original command in MOTION state.
+   '("j" . "H-j")
+   '("k" . "H-k")
+   ;; Use SPC (0-9) for digit arguments.
+   '("1" . meow-digit-argument)
+   '("2" . meow-digit-argument)
+   '("3" . meow-digit-argument)
+   '("4" . meow-digit-argument)
+   '("5" . meow-digit-argument)
+   '("6" . meow-digit-argument)
+   '("7" . meow-digit-argument)
+   '("8" . meow-digit-argument)
+   '("9" . meow-digit-argument)
+   '("0" . meow-digit-argument)
+   '("/" . meow-keypad-describe-key)
+   '("?" . meow-cheatsheet))
+  (meow-normal-define-key
+   '("0" . meow-expand-0)
+   '("9" . meow-expand-9)
+   '("8" . meow-expand-8)
+   '("7" . meow-expand-7)
+   '("6" . meow-expand-6)
+   '("5" . meow-expand-5)
+   '("4" . meow-expand-4)
+   '("3" . meow-expand-3)
+   '("2" . meow-expand-2)
+   '("1" . meow-expand-1)
+   '("-" . negative-argument)
+   '(";" . meow-reverse)
+   '("," . meow-inner-of-thing)
+   '("." . meow-bounds-of-thing)
+   '("[" . meow-beginning-of-thing)
+   '("]" . meow-end-of-thing)
+   '("a" . meow-append)
+   '("A" . meow-open-below)
+   '("b" . meow-back-word)
+   '("B" . meow-back-symbol)
+   '("c" . meow-change)
+   '("d" . meow-delete)
+   '("D" . meow-backward-delete)
+   '("e" . meow-next-word)
+   '("E" . meow-next-symbol)
+   '("f" . meow-find)
+   '("g" . meow-cancel-selection)
+   '("G" . meow-grab)
+   '("h" . meow-left)
+   '("H" . meow-left-expand)
+   '("i" . meow-insert)
+   '("I" . meow-open-above)
+   '("j" . meow-next)
+   '("J" . meow-next-expand)
+   '("k" . meow-prev)
+   '("K" . meow-prev-expand)
+   '("l" . meow-right)
+   '("L" . meow-right-expand)
+   '("m" . meow-join)
+   '("n" . meow-search)
+   '("O" . meow-block)
+   '("o" . meow-to-block)
+   '("p" . meow-yank)
+   '("q" . meow-quit)
+   '("Q" . meow-goto-line)
+   '("r" . meow-replace)
+   '("R" . meow-swap-grab)
+   '("s" . meow-kill)
+   '("t" . meow-till)
+   '("u" . meow-undo)
+   '("U" . meow-undo-in-selection)
+   '("v" . meow-visit)
+   '("w" . meow-mark-word)
+   '("W" . meow-mark-symbol)
+   '("x" . meow-line)
+   '("X" . meow-goto-line)
+   '("y" . meow-save)
+   '("Y" . meow-sync-grab)
+   '("z" . meow-pop-selection)
+   '("'" . repeat)
+   '("<escape>" . ignore)
+   '("C-;" . ignore)
+   '("P" . undo-redo)))
+#+end_src
+
+** Install and Config
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package meow
+    :ensure t
+    :init
+    (meow-global-mode 1)
+    (bind-key "C-;" 'meow-normal-mode)
+    :config
+    (setq meow-keypad-leader-dispatch "C-c") ;; 进入 keypad 后直接按 c x h m g 以外的键直接翻译成 C-a key ,实现 leader key 效果
+    (meow-setup)
+        ;; (setq meow-replace-state-name-list
+    ;;   '((normal . "N")
+    ;;     (insert . "I")
+    ;;     (motion . "M")
+    ;;     (keypad . "K")))
+    )
+#+end_src
+* Program-Conf
+** treesitter
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package treesit-auto
+    :demand t
+    :ensure t
+    :hook (after-init . global-treesit-auto-mode)
+    :config
+    (setq treesit-auto-install 'prompt)
+    (setq treesit-font-lock-level 4)
+    (setq treesit-auto-mode 1))
+#+end_src
+** Prog-mode
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package prog-mode
+    :config
+    (global-prettify-symbols-mode)
+    (defun indicate-buffer-boundaries-left ()
+      (setq indicate-buffer-boundaries 'left))
+    (add-hook 'prog-mode-hook 'indicate-buffer-boundaries-left))
+#+end_src
+** Eglot
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (defun stop-spamming-pls-2 (orig-fun &rest args)
+    "Stop eglot from spamming the echo area"
+    (if (not (string-equal (nth 1 args) "$/progress"))
+        (apply orig-fun args)
+      )
+    )
+  (advice-add 'eglot-handle-notification :around #'stop-spamming-pls-2)
+#+end_src
+** ESS
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package ess
+  :init
+  (setq ess-style 'RStudio)
+  :mode
+  (("\\.[rR]" . ess-r-mode)
+   ;; If you also use julia or some other language
+   ("\\.[jJ][lL]" . ess-julia-mode))
+  ;; Add my personal key-map
+  :config
+  ;; ESS process (print all)
+  (setq ess-eval-visibly-p t)
+  ;; Silence asking for aprenth directory
+  (setq ess-ask-for-ess-directory nil)
+  ;; Syntax highlights
+  (setq ess-R-font-lock-keywords
+	'((ess-R-fl-keyword:keywords . t)
+	  (ess-R-fl-keyword:constants . t)
+	  (ess-R-fl-keyword:modifiers . t)
+	  (ess-R-fl-keyword:fun-defs . t)
+	  (ess-R-fl-keyword:assign-ops . t)
+	  (ess-R-fl-keyword:%op% . t)
+	  (ess-fl-keyword:fun-calls . t)
+	  (ess-fl-keyword:numbers . t)
+	  (ess-fl-keyword:operators)
+	  (ess-fl-keyword:delimiters)
+	  (ess-fl-keyword:=)
+	  (ess-R-fl-keyword:F&T . t))))
+#+end_src
+* Project
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package projectile
+    :ensure t
+    :hook (prog-mode . projectile-mode))
+#+end_src
+* Window
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package ace-window
+    :ensure nil
+    :hook (after-init . ace-window-display-mode)
+    :bind
+    ("C-c w w" . 'ace-window) ;; space + w w 
+    ("C-c w d" . 'ace-delete-window)
+    ("C-c w s" . 'ace-swap-window)
+    ("C-c w f" . 'find-file-other-window)
+    ("C-c w j" . 'split-window-vertically)
+    ("C-c w l" . 'split-window-horizontally))
+#+end_src

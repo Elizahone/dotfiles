@@ -1,0 +1,101 @@
+#+TITLE: Algorithm
+#+STARTUP: fold
+
+* Leetcode Contest
+** 第 396 场周赛
+*** 1. 有效单词 [[https://leetcode.cn/problems/valid-word/][]]
+
+一次遍历，判断是否满足条件。
+
+#+begin_src c++
+  class Solution {
+  public:
+    bool isValid(string word) {
+      int n = word.size();
+      if (n < 3) return false;
+      bool voewl = false, cons = false;
+      unordered_set dic = {'a', 'e', 'i', 'o', 'u'};
+      for (char c : word) {
+        if (c == '#' || c == '$' || c == '@') {
+          return false;
+        }
+        if (c >= '0' && c <= '9') {
+          continue ;
+        }
+        if (dic.count(c | 0b00100000)) {
+          voewl = true;
+        } else {
+          cons = true;
+        }
+      }
+      return voewl && cons;
+    }
+  };
+#+end_src
+*** 2. K 周期字符串需要的最少操作次数 [[https://leetcode.cn/problems/minimum-number-of-operations-to-make-word-k-periodic/description/][]]
+
+每 k 个为一组，统计每组的个数，最后将最多的那一组作为模板，替换其他组 ： =使用 map ，在统计的时候得出最大值，最后 用长度除以 k 再减去最大值=
+
+#+begin_src c++
+  class Solution {
+  public:
+    bool isValid(string word) {
+      int n = word.size();
+      if (n < 3) return false;
+      bool voewl = false, cons = false;
+      unordered_set dic = {'a', 'e', 'i', 'o', 'u'};
+      for (char c : word) {
+        if (c == '#' || c == '$' || c == '@') {
+          return false;
+        }
+        if (c >= '0' && c <= '9') {
+          continue ;
+        }
+        if (dic.count(c | 0b00100000)) {
+          voewl = true;
+        } else {
+          cons = true;
+        }
+      }
+      return voewl && cons;
+    }
+  };
+#+end_src
+*** 3. 同位字符串连接的最小长度 [[https://leetcode.cn/problems/minimum-length-of-anagram-concatenation/description/][]]
+
+同位字符串意味着如果将字符串等分成 K 段，每一段的字符串的重新排列必然相等，枚举因子后可以将字串排序后比较是否相等，也可以比较每个字符的个数
+
+
+#+begin_src C++
+  class Solution {
+  public:
+    int minAnagramLength(string s) {
+      int n = s.length();
+      for (int k = 1; k <= n / 2; k++) { // 枚举因子
+        if (n % k) {
+          continue;
+        }
+        array<int, 26> cnt0{};
+        for (int j = 0; j < k; j++) {
+          cnt0[s[j] - 'a']++;
+        }
+        for (int i = k; i <= n; i += k) {
+          array<int, 26> cnt{};
+          for (int j = i - k; j < i; j++) {
+            cnt[s[j] - 'a']++;
+          }
+          if (cnt != cnt0) {
+            goto next;
+          }
+        }
+        return k;
+      next:;
+      }
+      return n;
+    }
+  };
+#+end_src
+*** 使数组中所有元素相等的最小开销 [[https://leetcode.cn/problems/minimum-cost-to-equalize-array/description/][]]
+#+begin_src c++
+  
+#+end_src

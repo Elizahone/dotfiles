@@ -1,0 +1,254 @@
+{
+
+    // Position TOP
+    "layer": "top",
+    "margin-top": 1,
+    "margin-bottom": 0,
+
+    // Position BOTTOM
+    // "position": "bottom",
+    // "margin-top": 0,
+    // "margin-bottom": 14,
+
+    "layer": "top",
+    "height": 5,
+    "margin-left": 0,
+    "margin-right": 0,    
+    "spacing": 0,
+
+    // Modules Left
+    "modules-left": [
+        "wlr/taskbar",
+        "custom/term"
+    ],
+
+    // Modules Center
+    "modules-center": [
+        "hyprland/workspaces"
+    ],
+
+    // Modules Right    
+    "modules-right": [
+        "pulseaudio",
+        "battery", 
+        "network",
+        "clock",
+        "custom/exit"
+    ],
+
+    // Group Quicklinks
+    "group/quicklinks": {
+        "orientation": "horizontal",
+        "modules": [
+            "custom/filemanager",
+            "custom/brave",
+        ]
+    },
+
+    // Group Hardware
+    "group/hardware": {
+        "orientation": "horizontal",
+        "modules": [
+            "disk",
+            "cpu",
+            "memory"
+        ]
+    },
+
+
+    // Workspaces
+    "hyprland/workspaces" : {
+        "on-click": "activate",
+        "active-only": false,
+        "all-outputs": true,
+        "format": "{icon}",
+        "format-icons": {
+            "urgent": "",
+            "active": "",
+            "default": ""
+        },
+        "persistent_workspaces": {
+            "*": 4
+        }       
+    },
+
+    // Taskbar
+    "wlr/taskbar": {
+        "format": "{icon}",
+        "icon-size": 18,
+        "tooltip-format": "{title}",
+        "on-click": "activate",
+        "on-click-middle": "close",
+        "ignore-list": [
+            "kitty"
+        ],
+        "app_ids-mapping": {
+            "firefoxdeveloperedition": "firefox-developer-edition"
+        },
+        "rewrite": {
+            "Firefox Web Browser": "Firefox",
+            "Foot Server": "Terminal"
+        }
+    },
+
+    // Hyprland Window
+    "hyprland/window": {
+        "rewrite": {
+            "(.*) - Brave": "$1",
+            "(.*) - Chromium": "$1",
+            "(.*) - Brave Search": "$1",
+            "(.*) - Outlook": "$1",
+            "(.*) Microsoft Teams": "$1"
+        },
+        "separate-outputs": true
+    },
+
+
+
+    // Filemanager Launcher
+    "custom/filemanager": {
+        "format": "",
+        "on-click": "~/dotfiles/scripts/filemanager.sh",
+        "tooltip": false
+    },
+
+    // Brave firefox
+    "custom/brave": {
+        "format": "",
+        "on-click": "brave",
+        "tooltip": false
+    },
+
+    // ChatGPT Launcher
+    "custom/chatgpt": {
+        "format": "",
+        "on-click": "brave --app=https://chat.openai.com",
+        "tooltip": false
+    },
+
+    // Rofi Calculator
+    "custom/calculator": {
+        "format": "",
+        "on-click": "~/dotfiles/scripts/calculator.sh",
+        "tooltip": false
+    },
+
+
+    // Rofi Application Launcher
+    "custom/appmenu": {
+        "format": "Apps",
+        "on-click": "~/dotfiles/scripts/applauncher.sh",
+        "tooltip": false
+    },
+
+    // Power Menu
+    "custom/exit": {
+        "format": "",
+        "on-click": "wlogout",
+        "tooltip": false
+    },
+
+    // Keyboard State
+    "keyboard-state": {
+        "numlock": true,
+        "capslock": true,
+        "format": "{name} {icon}",
+        "format-icons": {
+            "locked": "",
+            "unlocked": ""
+        }
+    },
+
+    // System tray
+    "tray": {
+        // "icon-size": 21,
+        "spacing": 10
+    },
+
+    // Clock
+    "clock": {
+        // "timezone": "America/New_York",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+        "format-alt": "{:%Y-%m-%d}"
+    },
+
+    // CPU
+    "cpu": {
+        "format": "/ C {usage}% "
+    },
+
+    // Memory
+    "memory": {
+        "format": "/ M {}% "
+    },
+
+    // Harddisc space used
+    "disk": {
+        "interval": 30,
+        "format": "   {percentage_used}% ",
+        "path": "/"
+    }, 
+
+    // Network
+    "network": {
+        "format": "{ifname}",
+        "format-wifi": "   {essid}",
+        "format-ethernet": " ",
+        "format-disconnected": "", //An empty format will hide the module.
+            "tooltip-format": " {ifname} via {gwaddri}",
+        "tooltip-format-wifi": "   {essid}",
+        "tooltip-format-ethernet": "  {ifname}",
+        "tooltip-format-disconnected": "Disconnected",
+        "max-length": 20
+    },
+
+    // Battery
+    "battery": {
+        "states": {
+            // "good": 95,
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon}   {capacity}%",
+        "format-charging": "󱎗  {capacity}%",
+        "format-plugged": "  {capacity}%",
+        "format-alt": "{icon}  {time}",
+        // "format-good": "", // An empty format will hide the module
+        // "format-full": "",
+        "format-icons": [" ", " ", " ", " ", " "]
+    },
+
+    // Pulseaudio
+    "pulseaudio": {
+        // "scroll-step": 1, // %, can be a float
+        "format": "{icon}  {volume}%",
+        "format-bluetooth": "{volume}% {icon} {format_source}",
+        "format-bluetooth-muted": " {icon} {format_source}",
+        "format-muted": " {format_source}",
+        "format-source": "{volume}% ",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", " ", " "]
+        },
+        "on-click": "pypr toggle volume"
+    },
+
+    // Other
+    "user": {
+        "format": "{user}",
+        "interval": 60,
+        "icon": false,
+    },
+
+    "custom/term": {
+        "format":" ",
+        "on-click": "pypr toggle term"
+    }
+
+}

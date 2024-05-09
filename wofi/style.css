@@ -1,0 +1,45 @@
+#window {
+    margin: 0px;
+    border: 1px solid;
+    background-color: rgba(250, 240, 230, 1);
+    font-size:20px;
+}
+
+#input {
+    margin: 5px;
+    border: none;
+    color: #d8dee9;
+    background-color: rgba(50, 50, 50, 0.2);
+}
+
+#inner-box {
+    margin: 5px;
+    border: none;
+    background-color:  rgba(50, 50, 50, 0.2); 
+}
+
+#outer-box {
+    margin: 5px;
+    border: none;
+    background-color: rgba(50, 50, 50, 0.2);
+}
+
+#scroll {
+    margin: 0px;
+    border: none;
+}
+
+#text {
+    margin: 5px;
+    border: none;
+    color: #303030;
+}
+
+#entry:selected {
+    background-color: #FAF0EA;
+}
+
+#expander-box {
+    background-color: #FAF0EA;
+
+}
