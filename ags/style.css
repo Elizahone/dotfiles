@@ -1,0 +1,56 @@
+* {
+    font-family: "Roboto Mono Nerd Font";
+    font-size: 18px;
+    color: #000000;
+}
+
+window.bar {
+    background-color: rgba(256, 256, 256, 0.2);
+    color: @theme_fg_color;
+}
+
+button {
+    min-width: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    background-color: transparent;
+}
+
+button:active {
+    background-color: @theme_selected_bg_color;
+}
+
+button:hover {
+    border-bottom: 3px solid @theme_fg_color;
+    border-radius: 20px;
+}
+
+label {
+    font-weight: bold;
+}
+
+.workspaces button.focused {
+    border-bottom: 3px solid @theme_selected_bg_color;
+    border-radius: 25px;
+}
+
+.client-class {
+    padding-left: 2px;
+    color: @theme_selected_bg_color;
+}
+
+.notification {
+    color: yellow;
+}
+
+.pavucontrol {
+    border-radius: 30px;
+    background: transparent;
+    border: 0;
+}
+
+
+levelbar block,
+highlight {
+    min-height: 10px;
+}

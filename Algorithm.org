@@ -2,34 +2,76 @@
 #+STARTUP: fold
 
 * Leetcode Contest
+** 第 395 场周赛
+*** 1. 找出与数组相加的整数 I [[https://leetcode.cn/problems/find-the-integer-added-to-array-i/description/][]]
+
+题目保证答案一定存在， 则 nums2 的最小值减去 nums1 的最小值即可
+
+#+begin_src C++
+  class Solution {
+  public:
+      int addedInteger(vector<int>& nums1, vector<int>& nums2) {
+          ranges::sort(nums1);
+          ranges::sort(nums2);
+          return nums2[0]-nums1[0];
+      }
+  };
+#+end_src
+*** 2. 找出与数组相加的整数 II [[https://leetcode.cn/problems/find-the-integer-added-to-array-ii/description/][]]
+
+最后的答案一定等于 =nums2的最小值减去删除后的nums1的最小值= ，如同第一题。无论删除哪两个数，最后的最小值一定是删除前的前三小中的一个（因为只删除两个），那么枚举最小值是三个中的哪一个，之后检查剩下的数满不满足条件即可。如果枚举第一个最小值，那么允许两次不满足，第二个允许一个不满足... 可以换个思路，检查 nums2 是否是 (nums1[i] + diff) 的字串。由于 nums2 最小值固定，因此倒着枚举第一个满足条件的即为答案。
+
+#+begin_src C++
+  class Solution {
+  public:
+      int minimumAddedInteger(vector<int>& nums1, vector<int>& nums2) {
+          ranges::sort(nums1);
+          ranges::sort(nums2);
+          int n = nums1.size();
+          int m = nums2.size();
+          for (int i = 2; i > 0; i--) { // 到着枚举最小值
+              int diff = nums2[0] - nums1[i];
+              // 检查是否是字串
+              int k = 0; // nums2 subscript
+              for (int j = i; j < n; j++) {
+                  if (nums1[j]+diff == nums2[k] && ++k == m) {
+                      return diff;
+                  }
+              }
+          }
+          return nums2[0]-nums1[0]; // 保证答案必然存在，因此前面两个如果没有答案，则必然是
+      }
+  };
+#+end_src
+*** 3. 数组最后一个元素的最小值 [[https://leetcode.cn/problems/minimum-array-end/description/][]]
+*** 4. 找出唯一性数组的中位数 [[https://leetcode.cn/problems/find-the-median-of-the-uniqueness-array/description/][]]
 ** 第 396 场周赛
 *** 1. 有效单词 [[https://leetcode.cn/problems/valid-word/][]]
 
 一次遍历，判断是否满足条件。
-
 #+begin_src c++
   class Solution {
   public:
-    bool isValid(string word) {
-      int n = word.size();
-      if (n < 3) return false;
-      bool voewl = false, cons = false;
-      unordered_set dic = {'a', 'e', 'i', 'o', 'u'};
-      for (char c : word) {
-        if (c == '#' || c == '$' || c == '@') {
-          return false;
-        }
-        if (c >= '0' && c <= '9') {
-          continue ;
-        }
-        if (dic.count(c | 0b00100000)) {
-          voewl = true;
-        } else {
-          cons = true;
-        }
+      bool isValid(string word) {
+          int n = word.size();
+          if (n < 3) return false;
+          bool voewl = false, cons = false;
+          unordered_set dic = {'a', 'e', 'i', 'o', 'u'};
+          for (char c : word) {
+              if (c == '#' || c == '$' || c == '@') {
+                  return false;
+              }
+              if (c >= '0' && c <= '9') {
+                  continue ;
+              }
+              if (dic.count(c | 0b00100000)) {
+                  voewl = true;
+              } else {
+                  cons = true;
+              }
+          }
+          return voewl && cons;
       }
-      return voewl && cons;
-    }
   };
 #+end_src
 *** 2. K 周期字符串需要的最少操作次数 [[https://leetcode.cn/problems/minimum-number-of-operations-to-make-word-k-periodic/description/][]]
@@ -39,63 +81,153 @@
 #+begin_src c++
   class Solution {
   public:
-    bool isValid(string word) {
-      int n = word.size();
-      if (n < 3) return false;
-      bool voewl = false, cons = false;
-      unordered_set dic = {'a', 'e', 'i', 'o', 'u'};
-      for (char c : word) {
-        if (c == '#' || c == '$' || c == '@') {
-          return false;
-        }
-        if (c >= '0' && c <= '9') {
-          continue ;
-        }
-        if (dic.count(c | 0b00100000)) {
-          voewl = true;
-        } else {
-          cons = true;
-        }
+      bool isValid(string word) {
+          int n = word.size();
+          if (n < 3) return false;
+          bool voewl = false, cons = false;
+          unordered_set dic = {'a', 'e', 'i', 'o', 'u'};
+          for (char c : word) {
+              if (c == '#' || c == '$' || c == '@') {
+                  return false;
+              }
+              if (c >= '0' && c <= '9') {
+                  continue ;
+              }
+              if (dic.count(c | 0b00100000)) {
+                  voewl = true;
+              } else {
+                  cons = true;
+              }
+          }
+          return voewl && cons;
       }
-      return voewl && cons;
-    }
   };
 #+end_src
 *** 3. 同位字符串连接的最小长度 [[https://leetcode.cn/problems/minimum-length-of-anagram-concatenation/description/][]]
 
 同位字符串意味着如果将字符串等分成 K 段，每一段的字符串的重新排列必然相等，枚举因子后可以将字串排序后比较是否相等，也可以比较每个字符的个数
 
+#+begin_src C++
+  class Solution {
+  public:
+      int minAnagramLength(string s) {
+          int n = s.length();
+          for (int k = 1; k <= n / 2; k++) { // 枚举因子
+              if (n % k) {
+                  continue;
+              }
+              array<int, 26> cnt0{};
+              for (int j = 0; j < k; j++) {
+                  cnt0[s[j] - 'a']++;
+              }
+              for (int i = k; i <= n; i += k) {
+                  array<int, 26> cnt{};
+                  for (int j = i - k; j < i; j++) {
+                      cnt[s[j] - 'a']++;
+                  }
+                  if (cnt != cnt0) {
+                      goto next;
+                  }
+              }
+              return k;
+          next:;
+          }
+          return n;
+      }
+  };
+#+end_src
+*** 4. 使数组中所有元素相等的最小开销 [[https://leetcode.cn/problems/minimum-cost-to-equalize-array/description/][]]
+#+begin_src c++
+  
+#+end_src
+** 第 397 场周赛
+*** 1. 两个字符串的排列差 [[https://leetcode.cn/problems/permutation-difference-between-two-strings/description/][]]
 
 #+begin_src C++
   class Solution {
   public:
-    int minAnagramLength(string s) {
-      int n = s.length();
-      for (int k = 1; k <= n / 2; k++) { // 枚举因子
-        if (n % k) {
-          continue;
-        }
-        array<int, 26> cnt0{};
-        for (int j = 0; j < k; j++) {
-          cnt0[s[j] - 'a']++;
-        }
-        for (int i = k; i <= n; i += k) {
-          array<int, 26> cnt{};
-          for (int j = i - k; j < i; j++) {
-            cnt[s[j] - 'a']++;
+      int findPermutationDifference(string s, string t) {
+          int n = s.size();
+          unordered_map<char, int> map;
+          for (int i = 0; i < n; i++) {
+              map[s[i]] = i;
           }
-          if (cnt != cnt0) {
-            goto next;
+          int ans = 0;
+          for (int i = 0; i < n; i++) {
+              ans += abs(i - map[t[i]]);
           }
-        }
-        return k;
-      next:;
+          return ans;
       }
-      return n;
-    }
   };
 #+end_src
-*** 使数组中所有元素相等的最小开销 [[https://leetcode.cn/problems/minimum-cost-to-equalize-array/description/][]]
-#+begin_src c++
-  
+*** 2. 从魔法师身上吸取的最大能量 [[https://leetcode.cn/problems/taking-maximum-energy-from-the-mystic-dungeon/description/][]]
+
+最朴素的思想就是一次遍历每个数（即起点）比较大小，然而会超时，注意到超过 K 的数都可以由在 K 以内的数运算得到
+，因此以遍历前 K 个数，建立后缀和数组，通过 O(1) 的时间复杂度得到其余各数。
+#+begin_src C++
+  class Solution {
+  public:
+      int maximumEnergy(vector<int>& energy, int k) {
+          int n = energy.size();
+          int ans = INT_MIN;
+          for (int i = n-k; i < n; i++) {
+              int pre = 0;
+              for (int j = i; j >= 0; j-=k) {
+                  pre += energy[j];
+                  ans = max(ans, pre);
+              }
+          }
+          return ans;
+      }
+  };
 #+end_src
+*** 3. 矩阵中的最大得分 [[https://leetcode.cn/problems/maximum-difference-score-in-a-grid/][]]
+
+有点类似于二维前缀和
+从 右下角 向左上角 遍历：
+#+begin_src C++
+  class Solution {
+  public:
+      int maxScore(vector<vector<int>>& grid) {
+          int m = grid.size(), n = grid[1].size();
+          vector<vector<int>> suf(m+1, vector<int>(n+1, 0));
+          for (int i = m-1; i >= 0; i--) {
+              for (int j = n-1; j >= 0; j--) {
+                  int right = suf[i][j+1];
+                  int below = suf[i+1][j];
+                  suf[i][j] = max(grid[i][j], max(right, below));
+              }
+          }
+          int ans = INT_MIN;
+          for (int i = 0; i < m; i++) {
+              for (int j = 0; j < n; j++) {
+                  if (i == m-1 && j == n-1) continue ;
+                  ans = max(ans, max(suf[i+1][j], suf[i][j+1]) - grid[i][j]);
+              }
+          }
+          return ans;
+      }
+  };
+#+end_src
+从 左上角 向 右下角遍历：
+#+begin_src C++
+  class Solution {
+  public:
+      int maxScore(vector<vector<int>>& grid) {
+          int ans = INT_MIN;
+          int m = grid.size(), n = grid[1].size();
+          // 遍历终点的同时计算起点的最小值，随着，因此初始化为 INT_MAX;
+          // f[i][j] 代表以 （i-1,j-1）结尾的矩形的最小值。
+          vector<vector<int>> f(m+1, vector<int>(n+1, INT_MAX));
+          for (int i = 0; i < m; i++) {
+              for (int j = 0; j < n; j++) {
+                  int mn = min(f[i+1][j], f[i][j+1]);
+                  ans = max(ans, grid[i][j] - mn);
+                  f[i+1][j+1] = min(grid[i][j], mn);
+              }
+          }
+          return ans;
+      }
+  };
+#+end_src
+*** 4. 找出分数最低的排列 [[https://leetcode.cn/problems/find-the-minimum-cost-array-permutation/][]]

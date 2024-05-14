@@ -1,0 +1,27 @@
+format = '''$hostname $directory $fill$python$git_branch$shell 
+> '''
+
+
+
+[hostname]
+ssh_only = false
+format = '[$hostname](bold red)   '
+disabled = false
+
+
+
+[python]
+symbol = ''
+pyenv_version_name = true
+format = ' [${symbol} (\($virtualenv\) )]($style)'
+
+
+[shell]
+fish_indicator = '󰈺 '
+powershell_indicator = '_'
+unknown_indicator = 'mystery shell'
+style = 'cyan bold'
+disabled = false
+
+[fill]
+symbol = ' '

@@ -101,6 +101,7 @@
   (setq-default indent-tabs-mode nil)
   (setq-default tab-width 4)
   (setq-default standard-indent 4)
+  (setq c-basic-offset 4)
   ;; 关闭自动保存 #
   (setq auto-save-default nil)
   ;; 关闭备份 ~
@@ -163,8 +164,7 @@
   (use-package smartparens
     :ensure t
     :config
-    (smartparens-global-mode)
-    )
+    (smartparens-global-mode))
   (use-package highlight-parentheses
     :ensure t
     :init
@@ -177,10 +177,10 @@
     (global-highlight-parentheses-mode)
     )
 
-  (use-package rainbow-delimiters
-    :ensure t
-    :hook (prog-mode . rainbow-delimiters-mode)
-    )
+  ;; (use-package rainbow-delimiters
+  ;;   :ensure t
+  ;;   :hook (prog-mode . rainbow-delimiters-mode)
+  ;;   )
 
 #+END_SRC
 
@@ -256,7 +256,7 @@
     :config
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-    :init (load-theme 'doom-one t))
+    :init (load-theme 'doom-xcode t))
   (use-package all-the-icons
     :defer t
     :ensure t
@@ -447,14 +447,19 @@
   (setq org-image-actual-width nil)
   (require 'org-tempo) ;; 增加模板
   (add-hook 'org-mode-hook
-        (lambda () (add-hook 'after-save-hook #'org-babel-tangle
-                 :append :local)))
+            (lambda () (add-hook 'after-save-hook #'org-babel-tangle
+                                 :append :local)))
   (use-package org-modern
     :ensure t
     :init
     (add-hook 'org-mode-hook #'org-indent-mode)
     :config
     (with-eval-after-load 'org (global-org-modern-mode)))
+
+  (use-package ob-R)
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((R . t)))
 #+END_SRC
 * Meow
 

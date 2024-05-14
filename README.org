@@ -27,7 +27,7 @@
   # Execute your favorite apps at launch
   exec-once = fcitx5 & swww-daemon & pypr
   exec-once = /usr/lib/polkit-kde-authentication-agent-1
-  exec-once = waybar & ~/.config/hypr/scripts/xdg-desktop-portal.sh
+  exec-once = ags & ~/.config/hypr/scripts/xdg-desktop-portal.sh
   exec-once = ~/.config/hypr/scripts/switch-wallpaper.sh
   exec-once = hypridle & mako
 
@@ -42,7 +42,7 @@
   # Set programs that you use
   $terminal = kitty
   $fileManager = dolphin
-  $menu = wofi --show drun -i
+  $menu = tofi-drun --drun-launch=true
 
 
 
@@ -107,7 +107,7 @@
 
       blur {
           enabled = true
-          size = 3
+          size = 10
           passes = 1
       }
 
@@ -276,10 +276,14 @@
   exec-once = wl-paste --type text --watch cliphist store #Stores only text data
 
   exec-once = wl-paste --type image --watch cliphist store #Stores only image data
-  bind = ALT, V, exec, cliphist list | wofi --dmenu | cliphist decode | wl-copy
+  bind = ALT, V, exec, cliphist list | tofi --prompt-text="Clipboard:"| cliphist decode | wl-copy
 
 
   bind = , Print, exec, ~/.config/hypr/scripts/screenshot.sh
+       #+end_src
+       
+#+begin_src conf :tangle ~/.config/hypr/hyprland.conf
+  windowrulev2 = opacity 0.8 0.8,class:^(kitty)$
 #+end_src
 
 
