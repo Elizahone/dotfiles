@@ -153,7 +153,7 @@
 ** 括号补全
 
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
-  ;; (electric-pair-mode 1)
+  (electric-pair-mode 1)
   ;; (setq electric-pair-pairs '(
   ;;                             (?\" . ?\")
   ;;                             (?\' . ?\')
@@ -176,7 +176,6 @@
           highlight-parentheses-delay 0.03)
     (global-highlight-parentheses-mode)
     )
-
   ;; (use-package rainbow-delimiters
   ;;   :ensure t
   ;;   :hook (prog-mode . rainbow-delimiters-mode)
@@ -256,7 +255,7 @@
     :config
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-    :init (load-theme 'doom-xcode t))
+    :init (load-theme 'doom-feather-light t))
   (use-package all-the-icons
     :defer t
     :ensure t
@@ -536,7 +535,7 @@
    '("p" . meow-yank)
    '("q" . meow-quit)
    '("Q" . meow-goto-line)
-   '("r" . meow-replace)
+   '("x" . meow-replace)
    '("R" . meow-swap-grab)
    '("s" . meow-kill)
    '("t" . meow-till)
@@ -545,7 +544,7 @@
    '("v" . meow-visit)
    '("w" . meow-mark-word)
    '("W" . meow-mark-symbol)
-   '("x" . meow-line)
+   '("r" . meow-line)
    '("X" . meow-goto-line)
    '("y" . meow-save)
    '("Y" . meow-sync-grab)
@@ -633,6 +632,10 @@
 	  (ess-fl-keyword:delimiters)
 	  (ess-fl-keyword:=)
 	  (ess-R-fl-keyword:F&T . t))))
+#+end_src
+** C/C++
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (setq c-ts-mode-indent-offset 4)
 #+end_src
 * Project
 

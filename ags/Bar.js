@@ -171,8 +171,14 @@ function ScreenShot() {
     }
   })
 
+  const Item2 = Widget.MenuItem({
+    child: Widget.Label("Region"),
+    on_activate: () => {
+      hyprland.messageAsync("dispatch exec slurp | grim -g - ")
+    }
+  })
   const menu = Widget.Menu({
-    children: [Item1],
+    children: [Item1, Item2],
   })
   return Widget.Button({
 
