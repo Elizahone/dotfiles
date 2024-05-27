@@ -2,8 +2,8 @@
 #+STARTUP: fold
 
 * Leetcode Contest
-** 第 395 场周赛
-*** 1. 找出与数组相加的整数 I [[https://leetcode.cn/problems/find-the-integer-added-to-array-i/description/][]]
+** 第 395 场周赛 <2024-04-28 Sun>
+*** DONE 1. 找出与数组相加的整数 I [[https://leetcode.cn/problems/find-the-integer-added-to-array-i/description/][]]
 
 题目保证答案一定存在， 则 nums2 的最小值减去 nums1 的最小值即可
 
@@ -17,7 +17,7 @@
       }
   };
 #+end_src
-*** 2. 找出与数组相加的整数 II [[https://leetcode.cn/problems/find-the-integer-added-to-array-ii/description/][]]
+*** DONE 2. 找出与数组相加的整数 II [[https://leetcode.cn/problems/find-the-integer-added-to-array-ii/description/][]]
 
 最后的答案一定等于 =nums2的最小值减去删除后的nums1的最小值= ，如同第一题。无论删除哪两个数，最后的最小值一定是删除前的前三小中的一个（因为只删除两个），那么枚举最小值是三个中的哪一个，之后检查剩下的数满不满足条件即可。如果枚举第一个最小值，那么允许两次不满足，第二个允许一个不满足... 可以换个思路，检查 nums2 是否是 (nums1[i] + diff) 的字串。由于 nums2 最小值固定，因此倒着枚举第一个满足条件的即为答案。
 
@@ -43,10 +43,89 @@
       }
   };
 #+end_src
-*** 3. 数组最后一个元素的最小值 [[https://leetcode.cn/problems/minimum-array-end/description/][]]
-*** 4. 找出唯一性数组的中位数 [[https://leetcode.cn/problems/find-the-median-of-the-uniqueness-array/description/][]]
-** 第 396 场周赛
-*** 1. 有效单词 [[https://leetcode.cn/problems/valid-word/][]]
+*** DONE 3. 数组最后一个元素的最小值 [[https://leetcode.cn/problems/minimum-array-end/description/][]]
+
+n 个数 AND 位运算的结果是 x，意味着这 n 个数的二进制位的 1 至少和 x 的一样，那么 x 的最小值即为将x的 0 二进制位填为 1，把所有 0 看作
+整体，则意味着他们将从 0 开始一次递增
+
+#+begin_src c++
+  class Solution {
+  public:
+      long long minEnd(int n, int x) {
+          n--; // 0 - n-1,最小值就是 将 n-1 填到 x 的 0 二进制位上
+          long long ans = x;
+          int i = 0, j = 0;
+          while (n >> j) {
+              if ((ans >> i & 1) == 0) {
+                  ans |= (long long) (n >> j & 1) << i;
+                  j++;
+              }
+              i++;
+          }
+          return ans;
+      }
+  };
+#+end_src
+
+*优化*
+把 x 取反，用 lowbit 枚举其中的 1，就是要填的空位。 lowbit = x & -x; x ^= lb;
+
+#+begin_src c++
+  class Solution {
+  public:
+      long long minEnd(int n, int x) {
+          n--;
+          long long ans = x;
+          int j = 0;
+          for (long long t = ~x, lb; n >> j; t ^= lb) {
+              lb = t & -t;
+              ans |= (long long) (n >> j++ & 1) * lb;
+          }
+          return ans;
+      }
+  };
+#+end_src
+*** DONE 4. 找出唯一性数组的中位数 [[https://leetcode.cn/problems/find-the-median-of-the-uniqueness-array/description/][]]
+
+二分答案 + 滑动窗口，如 [[https://leetcode.cn/problems/subarray-product-less-than-k/description/][乘积小于 k 的子数组]]，
+
+#+begin_src c++
+  class Solution {
+  public:
+      int medianOfUniquenessArray(vector<int>& nums) {
+          int n = nums.size();
+          long long k = ((long long) n * (n+1) / 2 + 1) / 2; // 中位数
+          // 中位数是 upper，查看是否有 k 个数小于 upper。
+          auto check = [&](int upper) {
+              long long cnt = 0;
+              int l = 0;
+              unordered_map<int, int> freq;
+              for (int r = 0; r < n; r++) {
+                  freq[nums[r]]++;
+                  while (freq.size() > upper) { // 即小于 upper 的个数 (cnt)
+                      int out = nums[l++];
+                      if (--freq[out] == 0) {
+                          freq.erase(out);
+                      }
+                  }
+                  cnt += r - l + 1;
+                  if (cnt >= k) {
+                      return true;
+                  }
+              }
+              return false;
+          };
+          int left = 0, right = n;
+          while (left + 1 < right) {
+              int mid = (left + right) / 2;
+              (check(mid) ? right : left) = mid;
+          }
+          return right;
+      }
+  };
+#+end_src
+** 第 396 场周赛 <2024-05-05 Sun>
+*** DONE 1. 有效单词 [[https://leetcode.cn/problems/valid-word/][]]
 
 一次遍历，判断是否满足条件。
 #+begin_src c++
@@ -74,7 +153,7 @@
       }
   };
 #+end_src
-*** 2. K 周期字符串需要的最少操作次数 [[https://leetcode.cn/problems/minimum-number-of-operations-to-make-word-k-periodic/description/][]]
+*** DONE 2. K 周期字符串需要的最少操作次数 [[https://leetcode.cn/problems/minimum-number-of-operations-to-make-word-k-periodic/description/][]]
 
 每 k 个为一组，统计每组的个数，最后将最多的那一组作为模板，替换其他组 ： =使用 map ，在统计的时候得出最大值，最后 用长度除以 k 再减去最大值=
 
@@ -103,7 +182,7 @@
       }
   };
 #+end_src
-*** 3. 同位字符串连接的最小长度 [[https://leetcode.cn/problems/minimum-length-of-anagram-concatenation/description/][]]
+*** DONE 3. 同位字符串连接的最小长度 [[https://leetcode.cn/problems/minimum-length-of-anagram-concatenation/description/][]]
 
 同位字符串意味着如果将字符串等分成 K 段，每一段的字符串的重新排列必然相等，枚举因子后可以将字串排序后比较是否相等，也可以比较每个字符的个数
 
@@ -136,12 +215,12 @@
       }
   };
 #+end_src
-*** 4. 使数组中所有元素相等的最小开销 [[https://leetcode.cn/problems/minimum-cost-to-equalize-array/description/][]]
+*** TODO 4. 使数组中所有元素相等的最小开销 [[https://leetcode.cn/problems/minimum-cost-to-equalize-array/description/][]]
 #+begin_src c++
-  
+
 #+end_src
-** 第 397 场周赛
-*** 1. 两个字符串的排列差 [[https://leetcode.cn/problems/permutation-difference-between-two-strings/description/][]]
+** 第 397 场周赛 <2024-05-12 Sun>
+*** DONE 1. 两个字符串的排列差 [[https://leetcode.cn/problems/permutation-difference-between-two-strings/description/][]]
 
 #+begin_src C++
   class Solution {
@@ -160,7 +239,7 @@
       }
   };
 #+end_src
-*** 2. 从魔法师身上吸取的最大能量 [[https://leetcode.cn/problems/taking-maximum-energy-from-the-mystic-dungeon/description/][]]
+*** DONE 2. 从魔法师身上吸取的最大能量 [[https://leetcode.cn/problems/taking-maximum-energy-from-the-mystic-dungeon/description/][]]
 
 最朴素的思想就是一次遍历每个数（即起点）比较大小，然而会超时，注意到超过 K 的数都可以由在 K 以内的数运算得到
 ，因此以遍历前 K 个数，建立后缀和数组，通过 O(1) 的时间复杂度得到其余各数。
@@ -181,7 +260,7 @@
       }
   };
 #+end_src
-*** 3. 矩阵中的最大得分 [[https://leetcode.cn/problems/maximum-difference-score-in-a-grid/][]]
+*** DONE 3. 矩阵中的最大得分 [[https://leetcode.cn/problems/maximum-difference-score-in-a-grid/][]]
 
 有点类似于二维前缀和
 从 右下角 向左上角 遍历：
@@ -230,4 +309,462 @@
       }
   };
 #+end_src
-*** 4. 找出分数最低的排列 [[https://leetcode.cn/problems/find-the-minimum-cost-array-permutation/][]]
+*** TODO 4. 找出分数最低的排列 [[https://leetcode.cn/problems/find-the-minimum-cost-array-permutation/][]]
+
+** 第 398 场周赛 <2024-05-19 Sun>
+*** DONE 1. 特殊数组 I [[https://leetcode.cn/problems/special-array-i/description/][]]
+
+#+begin_src c++
+  class Solution {
+  public:
+      bool isArraySpecial(vector<int>& nums) {
+          for (int i = 1; i < nums.size(); i++) {
+              if (nums[i] % 2 == nums[i-1] % 2) {
+                  return false;
+              }
+          }
+          return true;
+      }
+  };
+#+end_src
+*** DONE 2. 特殊数组 II [[https://leetcode.cn/problems/special-array-ii/description/][]]
+
+首先遍历元数组，找到以哪个下标开头不满足条件，即 check 数组，随后检查 check 中的下标是否在 from 到 to 之间，左闭右开。
+时间复杂度仍然很高.....
+#+begin_src c++
+  class Solution {
+  public:
+      vector<bool> isArraySpecial(vector<int>& nums, vector<vector<int>>& queries) {
+          vector<bool> ans;
+          vector<int> check;
+          for (int i = 0; i < nums.size()-1; i++) {
+              if (nums[i] % 2 == nums[i+1] % 2) {
+                  check.push_back(i);
+              }
+          }
+
+          for (auto q: queries) {
+              int from = q[0], to = q[1];
+              for (int i : check) {
+                  if (i >= from && i < to) {
+                      ans.push_back(false);
+                      goto b;
+                  }
+              }
+              ans.push_back(true);
+          b: continue ;
+          }
+          return ans;
+      }
+  };
+#+end_src
+*** TODO 3. 所有数对中数位不同只之和 [[https://leetcode.cn/problems/sum-of-digit-differences-of-all-pairs/description/][]]
+*** TODO 4. 到达第 K 级台阶的方案数 [[https://leetcode.cn/problems/find-number-of-ways-to-reach-the-k-th-stair/description/][]]<2024-05-19 Sun>
+** 第 399 场周赛 <2024-05-26 Sun>
+*** DONE 1. 优质数对的总数 I [[https://leetcode.cn/problems/find-the-number-of-good-pairs-i/description/][]]
+直接暴力解决问题
+#+begin_src c++
+  class Solution {
+  public:
+      int numberOfPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+          int n = nums1.size(), m = nums2.size();
+          int ans = 0;
+          for (int i = 0; i < n; i++) {
+              for (int j = 0; j < m; j++) {
+                  if (nums1[i] % (nums2[j]*k) == 0) {
+                      ans++;
+                  }
+              }
+          }
+          return ans;
+      }
+  };
+#+end_src
+*** DONE 2. 压缩字符串 III [[https://leetcode.cn/problems/string-compression-iii/description/][]]
+*简单一次遍历，统计相同字符个数*
+#+begin_src c++
+  class Solution {
+  public:
+      string compressedString(string word) {
+          string comp;
+          int n = word.size();
+          for (int i = 0; i < n; i++) {
+              int cnt = 1;
+              while (cnt < 9 && i != n && word[i] == word[i+1]) {
+                  cnt++;
+                  i++;
+              }
+              comp.push_back(cnt+'0');
+              comp.push_back(word[i]);
+          }
+          return comp;
+      }
+  };
+#+end_src
+*** DONE 3. 优质数对的总数 II [[https://leetcode.cn/problems/find-the-number-of-good-pairs-ii/description/][]]
+*使用hash表统计nums2的个数，之后遍历nums1中每个数的因子*
+    * 优化一：对nums1/k求因子，时间复杂度可以由 sqrt(n) 降低到 sqrt(n/k)
+
+#+begin_src c++
+  class Solution {
+  public:
+      long long numberOfPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+          unordered_map<int, int> map;
+          for (int i = 0; i < nums2.size(); i++) {
+              map[nums2[i]*k]++;
+          }
+          long long ans = 0;
+          for (int x : nums1) {
+              for (int i = 1; i * i <= x; i++) {
+                  if (x % i == 0) {
+                      ans += (i == x / i) ? map[i] : (map[i] + map[x/i]);
+                  }
+              }
+          }
+          return ans;
+      }
+  };
+#+end_src
+
+  * 优化二：以nums2 为主视角，统计nums1中是nums2的倍数，范围是（nums2[i], max(nums1)）
+
+#+begin_src c++
+  class Solution {
+  public:
+      long long numberOfPairs(vector<int>& nums1, vector<int>& nums2, int k) {
+          unordered_map<int, int> cnt1;
+          int u = 0;
+          for (int x : nums1) {
+              if (x % k == 0) {
+                  cnt1[x / k]++;
+              }
+              u = max(u, x);
+          }
+          if (cnt1.empty()) {
+              return 0;
+          }
+          unordered_map<int, int> cnt2; // 统计nums2中的重复数字，避免重复
+          for (int x : nums2) {
+              cnt2[x]++;
+          }
+
+          long long ans = 0;
+          // int u = ranges::max_element(cnt1)->first;
+          for (auto& [i, c] : cnt2) {
+              int s = 0;
+              for (int j = i; j <= u; j += i) {
+                  s += cnt1.contains(j) ? cnt1[j] : 0;
+              }
+              ans += (long long) s * c;
+          }
+          return ans;
+      }
+  };
+#+end_src
+*** TODO 4. 不包含相邻元素的子序列的最大和 [[https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/description/][]]
+* Algorithm Learning
+
+** 并查集(Union Find 又叫 Disjoint-Set)
+
+*** 并查集的使用是如下的场景
+1）一G开始每个元素都拥有自己的集合，在自己的集合里只有这个元素自己，一开始代表元素是自己
+2） =find(i)= ：查找i所在集合的代表元素，代表元素来代表i所在的集合
+3） =bool isSameSet(a, b)= ：判断a和b在不在一个集合里，即调用find函数看代表元素是否时同一个
+4） =void union(a, b)= ：a所在集合所有元素 与 b所在集合所有元素 合并成一个集合
+5）各种操作单次调用的均摊时间复杂度为O(1)
+
+并查集的两个优化，都发生在find方法里
+1）扁平化（一定要做）,在find过程中，将所经过的元素直接挂在代表元素上
+2）小挂大（可以不做，原论文中是秩的概念，可以理解为 粗略高度 或者 大小）
+
+[[https://www.luogu.com.cn/problem/P3367][测试链接]]
+
+模板：非小挂大优化，递归实现 find() 函数
+#+begin_src c++
+
+  #include<iostream>
+  #define N 100001
+  using namespace std;
+
+  int father[N]; // 父节点，最上面是代表节点
+  int n;
+  void build() {
+    for (int i = 0; i < n; i++) {
+      father[i] = i; // 初始每个集合的代表元素是自己
+    }
+  }
+
+  // 递归方法解决, 并进行扁平化处理
+  int find(int i) {
+    if (i != father[i]) {
+      father[i] = find(father[i]);
+    }
+    return father[i];
+  }
+
+  bool isSameSet(int a, int b) {
+    return find(a) == find(b);
+  }
+
+  void Union(int a, int b) {
+    father[find(a)] = find(b);  // 把 a 所在的集合 挂在 b 所在集合上
+  }
+
+
+  int main() {
+    int m;
+    cin  >> n >> m;
+    build();
+    while (m--) {
+      int z, x, y;
+      cin >> z >> x >> y;
+      if (z == 1) {
+        Union(x, y);
+      } else {
+        string ans = isSameSet(x, y) ? "Y" : "N";
+        cout << ans << endl;
+      }
+    }
+    return 0;
+  }
+#+end_src
+
+find() 的非递归实现：需增加 stack 数组作为栈存储路径上的节点
+
+#+begin_src c++
+  int stack[N];
+  int find(int i) {
+    int size = 0;
+    while (i != father[i]) {
+      stack[size++] = i;
+      i = father[i];
+    }
+    while (size > 0) {
+      father[stack[--size]] = i;
+    }
+    return i;
+  }
+
+#+end_src
+
+小挂大优化：需增加 size[] 数组存储每个代表节点所代表集合的大小,修改 build()和Union() 函数
+
+#+begin_src c++
+  int size[N];
+  void build() {
+    for (int i = 0; i <= n; i++) {
+      father[i] = i;
+      size[i] = 1;
+    }
+  }
+  void Union(int x, int y) {
+    int fx = find(x);
+    int fy = find(y);
+    if (fx != fy) {
+      // fx是集合的代表：拿大小
+      // fy是集合的代表：拿大小
+      if (size[fx] >= size[fy]) {
+        size[fx] += size[fy];
+        father[fy] = fx;
+      } else {
+        size[fy] += size[fx];
+        father[fx] = fy;
+      }
+    }
+  }
+#+end_src
+
+*** 案例：
+**** 例题一：[[https://leetcode.cn/problems/couples-holding-hands/][情侣牵手]]
+
+每两个人之间看作一个集合，若恰好满足题意，那么每个集合只有一对情侣，（如果一个集合里面有 K 对情侣，那么必然需要交换 K-1 次。)
+
+#+begin_src c++
+  int father[31];
+  int sets;
+  class Solution {
+  public:
+    int minSwapsCouples(vector<int>& row) {
+      int n = row.size();
+      build(n/2);
+      for (int i = 0; i < n; i += 2) {
+        Union(row[i] / 2, row[i+1] / 2);
+      }
+      return n/2 - sets;
+    }
+
+    void build(int n) {
+      for (int i = 0; i < n; i++) {
+        father[i] = i;
+      }
+      sets = n;
+    }
+
+    int find(int i) {
+      if (i != father[i]) {
+        father[i] = find(father[i]);
+      }
+      return father[i];
+    }
+    void Union(int a, int b) {
+      if (find(a) == find(b)) return ;
+      father[find(a)] = find(b);
+      sets--;
+    }
+  };
+#+end_src
+**** 例题二：[[https://leetcode.cn/problems/H6lPxb/description/][相似字符串组]]
+
+#+begin_src c++
+  int father[301];
+  int setsize;
+  class Solution {
+  public:
+      int numSimilarGroups(vector<string>& strs) {
+          int n = strs.size(); build(n);
+          for (int i = 0; i < n; i++) {
+              for (int j = i+1; j < n; j++) {
+                  if (check(strs[i], strs[j])) {
+                      _union(i, j);
+                  }
+              }
+          }
+          return setsize;
+      }
+
+      bool check(string a, string b) {
+          int diff = 0;
+          for (int i = 0; i < a.size(); i++) {
+              if (a[i] != b[i]) {
+                  diff++;
+              }
+          }
+          return diff <= 2;
+      }
+
+      void build(int n) {
+          for (int i = 0; i < n; i++) {
+              father[i] = i;
+          }
+          setsize = n;
+      }
+      int find(int x) {
+          if (father[x] != x) {
+              father[x] = find(father[x]);
+          }
+          return father[x];
+      }
+      void _union(int a, int b) {
+          int fa = find(a);
+          int fb = find(b);
+          if (fa != fb) {
+              father[fa] = fb;
+              setsize--;
+          }
+      }
+  };
+#+end_src
+**** 例题三：[[https://leetcode.cn/problems/number-of-islands/][岛屿数量]]
+将上下左右的 1 均 union，最后有几个集合即有几个岛屿
+*build 函数*
+#+begin_src c++
+  public static void build(int n, int m, char[][] board) {
+		cols = m;
+		sets = 0;
+		for (int a = 0; a < n; a++) {
+			for (int b = 0, index; b < m; b++) {
+				if (board[a][b] == '1') {
+					index = index(a, b);
+					father[index] = index;
+					sets++;
+				}
+			}
+		}
+	}
+#+end_src
+
+dfs 解法 （最优）
+
+#+begin_src c++
+  class Solution {
+  public:
+      int m, n;
+      int numIslands(vector<vector<char>>& grid) {
+          int ans = 0;
+          m = grid.size(); n = grid[0].size();
+          for (int i = 0; i < m; i++) {
+              for (int j = 0; j < n; j++) {
+                  if (grid[i][j] == '1') {
+                      ans++;
+                      dfs(i, j, grid);
+                  }
+              }
+          }
+          return ans;
+      }
+
+      void dfs(int i, int j, vector<vector<char>>& grid) {
+          if (i < 0 || i == m || j < 0 || j == n || grid[i][j] == '0') {
+              return ;
+          }
+          grid[i][j] = '0';
+          dfs(i-1, j, grid);
+          dfs(i+1, j, grid);
+          dfs(i, j-1, grid);
+          dfs(i, j+1, grid);
+      }
+  };
+#+end_src
+
+**** 例题四：[[https://leetcode.cn/problems/most-stones-removed-with-same-row-or-column/description/][移除最多的同行或同列石头]]
+
+使用map来存储行和列，并记录其father节点索引
+
+#+begin_src c++
+  int father[1005];
+  int sets;
+  unordered_map<int, int> col;
+  unordered_map<int, int> row;
+  class Solution {
+  public:
+      int removeStones(vector<vector<int>>& stones) {
+          sets = stones.size();
+          build(sets);
+          for (int i = 0; i < stones.size(); i++) {
+              int r = stones[i][0], c = stones[i][1];
+              if (row.contains(r)) {
+                  _union(i, row[r]);
+              } else {
+                  row[r] = i;
+              }
+              if (col.contains(c)) {
+                  _union(i, col[c]);
+              } else {
+                  col[c] = i;
+              }
+          }
+          col.clear(); row.clear();
+          return  stones.size()- sets;
+      }
+
+      void build(int n) {
+          for (int i = 0; i < n; i++) {
+              father[i] = i;
+          }
+      }
+      int find(int i) {
+          if (i != father[i]) {
+              father[i] = find(father[i]);
+          }
+          return father[i];
+      }
+      void _union(int a, int b) {
+          int fa = find(a);
+          int fb = find(b);
+          if (fa != fb) {
+              father[fa] = fb;
+              sets--;
+          }
+      }
+  };
+#+end_src

@@ -74,7 +74,6 @@
 
 * Basic
 ** use-package
-
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
   (setq package-archives '(("gnu" . "https://mirrors.ustc.edu.cn/elpa/gnu/")
 			   ("melpa" . "https://mirrors.ustc.edu.cn/elpa/melpa/")
@@ -106,6 +105,7 @@
   (setq auto-save-default nil)
   ;; 关闭备份 ~
   (setq  make-backup-files nil)
+  (setq x-select-enable-clipboard-manager nil)
 #+END_SRC
 
 记住光标历史，记住上个命令,自动 *revert buffer*
@@ -131,8 +131,27 @@
     :ensure nil
     :diminish
     :hook (after-init . global-auto-revert-mode))
-
 #+END_SRC
+
+Auto Save
+
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  (add-to-list 'load-path "~/.emacs.d/elpa/auto-save") ; add auto-save to your load-path
+  (require 'auto-save)
+
+  (setq auto-save-silent t)   ; quietly save
+  (setq auto-save-delete-trailing-whitespace t)  ; automatically delete spaces at the end of the line when saving
+
+  ;;; custom predicates if you don't want auto save.
+  ;;; disable auto save mode when current filetype is an gpg file.
+  (setq auto-save-disable-predicates
+        '((lambda ()
+            (string-suffix-p
+             "gpg"
+             (file-name-extension (buffer-name)) t))))
+#+END_SRC
+
+Auto Save
 
 ** Rime 输入法
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -154,12 +173,12 @@
 
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
   (electric-pair-mode 1)
-  ;; (setq electric-pair-pairs '(
-  ;;                             (?\" . ?\")
-  ;;                             (?\' . ?\')
-  ;;                             (?\{ . ?\})
-  ;;                             (?\[ . ?\])
-  ;;                             (?\( . ?\))))
+  (setq electric-pair-pairs '(
+                              (?\" . ?\")
+                              (?\' . ?\')
+                              (?\{ . ?\})
+                              (?\[ . ?\])
+                              (?\( . ?\))))
 
   (use-package smartparens
     :ensure t
@@ -237,7 +256,7 @@
   (use-package yasnippet
     :ensure t
     :config
-    (progn 
+    (progn
     (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
     (yas-global-mode 1)
     )
@@ -247,7 +266,7 @@
 ** Themes
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (set-face-attribute 'default nil :height 160)
-  (add-to-list 'default-frame-alist '(alpha-background . 95))
+  ;; (add-to-list 'default-frame-alist '(alpha-background . 95))
   (global-display-line-numbers-mode t)
   (use-package doom-themes
     :demand t
@@ -255,7 +274,7 @@
     :config
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-    :init (load-theme 'doom-feather-light t))
+    :init (load-theme 'doom-tokyo-night t))
   (use-package all-the-icons
     :defer t
     :ensure t
@@ -289,16 +308,16 @@
   :ensure t
   :custom (which-key-idle-delay 1)
   :config (which-key-mode))
-    
+
 #+end_src
 
 ** Dashboard
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
 
-  ;; 
+  ;;
   (setq inhibit-startup-screen t)
-  
+
   (use-package dashboard
   :ensure t
   :init
@@ -306,7 +325,7 @@
   (setq dashboard-center-content t)
   (setq dashboard-items '((recents   . 5)
                           (bookmarks . 5)
-                          (projects  . 3)
+                          (projects  . 5)
                           (agenda    . 3)))
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
@@ -374,7 +393,7 @@
             "^\\*terminal.*\\*.*$" term-mode
             "^\\*vterm.*\\*.*$"  vterm-mode
             "^\\*R.*\\*.*$"  ess-R-mode
-            
+
 
             "\\*DAP Templates\\*$" dap-server-log-mode
             "\\*ELP Profiling Restuls\\*" profiler-report-mode
@@ -439,7 +458,6 @@
     :ensure t)
 #+end_src
 * Orgmode
-
 ** org-modern
 
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
@@ -564,6 +582,7 @@
     (bind-key "C-;" 'meow-normal-mode)
     :config
     (setq meow-keypad-leader-dispatch "C-c") ;; 进入 keypad 后直接按 c x h m g 以外的键直接翻译成 C-a key ,实现 leader key 效果
+    (setq meow-use-clipboard 1)
     (meow-setup)
         ;; (setq meow-replace-state-name-list
     ;;   '((normal . "N")
@@ -637,6 +656,12 @@
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (setq c-ts-mode-indent-offset 4)
 #+end_src
+** Python
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package pyvenv
+    :ensure t)
+#+end_src
 * Project
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -650,10 +675,11 @@
     :ensure nil
     :hook (after-init . ace-window-display-mode)
     :bind
-    ("C-c w w" . 'ace-window) ;; space + w w 
+    ("C-c w w" . 'ace-window) ;; space + w w
     ("C-c w d" . 'ace-delete-window)
     ("C-c w s" . 'ace-swap-window)
     ("C-c w f" . 'find-file-other-window)
     ("C-c w j" . 'split-window-vertically)
     ("C-c w l" . 'split-window-horizontally))
 #+end_src
+

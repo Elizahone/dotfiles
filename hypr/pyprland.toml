@@ -21,7 +21,7 @@ animation = "fromRight"
 command = "pavucontrol"
 class = "pavucontrol"
 size = "20% 50%"
-position = "80% 3%"
+position = "1% 5%"
 unfocus = "hide"
 lazy = true
 

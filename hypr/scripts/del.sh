@@ -1,3 +1,3 @@
 #!bin/zsh
 
-mv $* /tmp
+mv $* ~/Trash/

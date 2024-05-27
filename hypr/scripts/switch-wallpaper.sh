@@ -8,7 +8,8 @@ source "$HOME/.cache/wal/colors.sh"
 # ----------------------------------------------------- 
 # Copy selected wallpaper into .cache folder
 # ----------------------------------------------------- 
-cp $wallpaper ~/.cache/current_wallpaper.jpg
+# cp $wallpaper ~/.cache/current_wallpaper.jpg
+
 
 # ----------------------------------------------------- 
 # get wallpaper iamge name
@@ -19,7 +20,6 @@ newwall=$(echo $wallpaper | sed "s|$HOME/Pictures/wallpaper/||g")
 # Set the new wallpaper
 # ----------------------------------------------------- 
 swww img $wallpaper --transition-step 20 --transition-fps=20
-~/dotfiles/waybar/reload.sh
 sleep 1
 
 # ----------------------------------------------------- 

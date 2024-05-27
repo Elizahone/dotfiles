@@ -182,7 +182,7 @@
             "transition-left-to-right": true,
          },
         "modules":[
-            "custom/tool",
+            "custom/logo",
             "group/screenshot"
         ] 
     },
@@ -201,8 +201,8 @@
 
     },
     // logo
-    "custom/tool":{
-        "format": "  ",
+    "custom/logo": {
+        "format": "",
         "tooltip": false
     },
     "custom/fullscreen": {
@@ -250,3 +250,4 @@
         "on-click": "shutdown now"
     }
 }
+
