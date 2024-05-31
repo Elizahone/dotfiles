@@ -269,6 +269,7 @@ label:focus {
 #custom-regionscreen {
   background-color: @color3;
   background-image: linear-gradient(45deg, @foreground 0%, @foreground 52%, @foreground 90%);
+  font-size: 18px;
   color: black;
 }
 
