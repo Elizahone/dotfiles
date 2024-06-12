@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SELECTION=$(echo -e "Capture FullScreen\nCapture Region"| wofi --show dmenu --height=150 --width=300 --prompt=ScreenShot)
+SELECTION=$(echo -e "Capture FullScreen\nCapture Region"| tofi
 PNAME=~/Pictures/ScreenShots/$(date +"%Y-%m-%d_%H-%M-%S")".png" 
 case $SELECTION in 
 "Capture FullScreen")

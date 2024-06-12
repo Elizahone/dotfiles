@@ -462,8 +462,315 @@ n 个数 AND 位运算的结果是 x，意味着这 n 个数的二进制位的 1
   };
 #+end_src
 *** TODO 4. 不包含相邻元素的子序列的最大和 [[https://leetcode.cn/problems/maximum-sum-of-subsequence-with-non-adjacent-elements/description/][]]
-* Algorithm Learning
+** 第 400 场周赛 <2024-06-02 Sun>
+*** DONE 1. 候诊室中的最少椅子数 [[https://leetcode.cn/problems/minimum-number-of-chairs-in-a-waiting-room/description/][]]
+#+begin_src c++
+  class Solution {
+  public:
+      int minimumChairs(string s) {
+          int ans = 0;
+          int sum = 0;
+          for (char c : s) {
+              sum += c == 'E' ? 1 : -1;
+              ans = max(ans, sum);
+          }
+          return ans;
+      }
+  };
+#+end_src
+*** DONE 2. 无需开会的工作日 [[https://leetcode.cn/problems/count-days-without-meetings/description/][]]
 
+[[https://leetcode.cn/problems/merge-intervals/description/][合并区间]] 之后遍历新数组，累加区间长度， 当 区间的 start 小于之前的区间的 end 时，就代表可以合并，前提是按区间起始排序
+
+#+begin_src c++
+  class Solution {
+  public:
+      vector<vector<int>> merge(vector<vector<int>>& intervals) {
+          ranges::sort(intervals);
+          vector<vector<int>> ans;
+          for (auto &p : intervals) {
+              if (!ans.empty() && p[0] <= ans.back()[1]) {
+                  ans.back()[1] = max(p[1], ans.back()[1]);
+              } else {
+                  ans.emplace_back(p);
+              }
+          }
+          return ans;
+      }
+  };
+#+end_src
+
+*合并区间法：*
+#+begin_src c++
+  class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        ranges::sort(intervals);
+        vector<vector<int>> ans;
+        for (auto &p : intervals) {
+            if (!ans.empty() && p[0] <= ans.back()[1]) {
+                ans.back()[1] = max(p[1], ans.back()[1]);
+            } else {
+                ans.emplace_back(p);
+            }
+        }
+        return ans;
+    }
+
+    int countDays(int days, vector<vector<int>>& meetings) {
+        meetings = merge(meetings);
+        int ans = 0;
+        for (auto& m : meetings) {
+            ans += m[1] - m[0] + 1;
+        }
+        return days - ans;
+    }
+};
+#+end_src
+
+*非合并区间做法, 按会议开始时间排序*
+
+#+begin_src c++
+  bool compareMeetings(const vector<int>& a, const vector<int>& b) {
+      return a[0] < b[0];
+  }
+  class Solution {
+  public:
+
+      int countDays(int days, vector<vector<int>>& meetings) {
+          sort(meetings.begin(), meetings.end(), compareMeetings);
+          int end_max = 0;
+          int sum = 0;
+          for (auto m : meetings) {
+              int start = m[0], end = m[1];
+              if (start > end_max) {
+                  end_max = end;
+                  sum += end - start + 1;
+              } else if (start <= end_max && end > end_max) {
+                  sum += end - end_max;
+                  end_max = end;
+              }
+          }
+          return days - sum;
+      }
+  };
+#+end_src
+*** DONE 3. 删除星号以后字典序最小的字符串 [[https://leetcode.cn/problems/lexicographically-minimum-string-after-removing-stars/submissions/536648576/][]]
+
+*建立 26 个栈，分别记录每个字母的下标，每遇到 * 号就遍历这 26 个栈，删除下标最大的，并将这个下标记录下来，最后遍历记录的下表，把没有删除的字母返回, 下方是遍历栈，即没有删除的字母*
+
+#+begin_src c++
+  class Solution {
+  public:
+      string clearStars(string s) {
+          int n = s.length();
+          vector<int> del(n);
+          stack<int> st[26];
+          for (int i = 0; i < n; i++) {
+              if (s[i] != '*') {
+                  st[s[i] - 'a'].push(i);
+                  continue;
+              }
+              for (auto& p : st) {
+                  if (!p.empty()) {
+                      del[p.top()] = true;
+                      p.pop();
+                      break;
+                  }
+              }
+          }
+
+          string t;
+          for (int i = 0; i < n; i++) {
+              if (!del[i] && s[i] != '*') {
+                  t += s[i];
+              }
+          }
+          return t;
+      }
+  };
+#+end_src
+
+*当不止 26 个栈时，可以建立一个最小堆，保存字母和下标，按字母降序，下标升序，每遇到 * 就弹出*
+#+begin_src c++
+  class Solution {
+  public:
+      string clearStars(string s) {
+          priority_queue<pair<char, int>> q;//记录当前*之前的字典序最小的字符，并且其位置最靠近当前的* (大根堆，对于存入的字符，需要取反)
+          vector<bool> toRemove(s.size(), false);//要删除的字符
+          for(int i=0;i<s.size();i++){
+              if(s[i] == '*'){
+                  while(!q.empty()){
+                      auto [c,index] = q.top();
+                      q.pop();
+                      if (!toRemove[index]) {
+                          toRemove[index] = true;
+                          break;
+                      }
+                  }
+              } else {
+                  q.push({-s[i], i});
+              }
+          }
+          string res;
+          for(int i=0;i<s.size();i++) {
+              if (s[i] != '*' && !toRemove[i]) {
+                  res += s[i];
+              }
+          }
+
+          return res;
+      }
+  };
+#+end_src
+*** DONE 4. 找到按位与最接近 K 的子数组 [[https://leetcode.cn/problems/find-subarray-with-bitwise-and-closest-to-k/description/][]]
+
+首先，怎么计算子数组的 AND 和： *最朴素的方法是枚举每个起点，之后即可计算 0123... 下标组的 AND 值， 代码如下：，此时时间复杂度为 N^2, 必然超时*
+
+#+begin_src c++
+  class Solution {
+  public:
+      int minimumDifference(vector<int>& nums, int k) {
+          int ans = INT_MAX;
+          for (int i = 0; i < nums.size(); i++) {
+              int AND = nums[i];
+              ans = min(abs(k - AND), ans);
+              for (int j = i + 1; j < nums.size(); j++) {
+                  AND &= nums[j];
+                  ans = min(abs(k - AND), ans);
+              }
+          }
+          return ans;
+      }
+  };
+#+end_src
+
+换个思路， *枚举每个终点，并且拿终点去 AND 上前面的每个数，那么nums[j]就代表每个子数组的AND和，并且是不断变化的如表*
+
+| 下标            |     0 |    1 |   2 |  3 | 4 |
+| i = 0 时的子数组 |     0 |      |     |    |   |
+| i = 1 时的子数组 |    01 |    1 |     |    |   |
+| i = 2 时的子数组 |   012 |   12 |   2 |    |   |
+| i = 3 时的子数组 |  0123 |  123 |  23 |  3 |   |
+| i = 4 时的子数组 | 01234 | 1234 | 234 | 34 | 4 |
+
+*此时虽然时间复杂度仍为 N^2 但是可以借助 AND 的性质，也可称为集合的性质 -> AND(交集)一定是逐渐减少的，上表，假设 i=4，如果子数组 234 的AND值等于 23，也就是 23 AND 4 = 23，意味着 23 是 4 的一个子集，*
+*那么 123 和 0123 也是 4 的子集，因为 123 和 0123一定是 23 的子集，因为交集的性质，所以 123 和 0123 的值不变*
+*时间复杂度是 O(n*log(U))*, U 为 Max(nums), U 是nums[j] &= nums[i]，由于交集必然会减少。
+
+
+#+begin_src c++
+  class Solution {
+  public:
+      int minimumDifference(vector<int>& nums, int k) {
+          int ans = INT_MAX;
+          for (int i = 0; i < nums.size(); i++) {
+              int x = nums[i];
+              ans = min(abs(k - x), ans);
+              for (int j = i - 1; j >= 0 && (nums[j] & x) != nums[j]; j--) {
+                  nums[j] &= nums[i];
+                  ans = min(abs(k - nums[j]), ans);
+              }
+          }
+          return ans;
+      }
+  };
+#+end_src
+** 第 401 场周赛 <2024-06-09 Sun>
+*** 1. 找出 K 秒后拿着球的孩子 [[https://leetcode.cn/problems/find-the-child-who-has-the-ball-after-k-seconds/description/][]]
+*** 2. K 秒后第 N 个元素的值 [[https://leetcode.cn/problems/find-the-n-th-value-after-k-seconds/description/][]]
+*** 3. 执行操作可获得的最大总奖励 I [[https://leetcode.cn/problems/maximum-total-reward-using-operations-i/description/][]]
+*** 4. 执行操作可获得的最大总奖励 II [[https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/description/][]]
+* Algorithm Learning
+** 单调栈
+
+单调栈最经典的用法是解决如下问题：
+每个位置都求：
+0） *当前位置的 左侧比当前位置的数字小，且距离最近的位置 在哪*
+1） *当前位置的 右侧比当前位置的数字小，且距离最近的位置 在哪*
+或者
+每个位置都求：
+0） *当前位置的 左侧比当前位置的数字大，且距离最近的位置 在哪*
+1） *当前位置的 右侧比当前位置的数字大，且距离最近的位置 在哪*
+或者，及时删除无用信息
+用单调栈的方式可以做到：求解过程中，单调栈所有调整的总代价为O(n)，单次操作的均摊代价为O(1)
+
++    [[https://www.nowcoder.com/practice/2a2c00e7a88a498693568cef63a4b7bb][模板题]] 经典实现是保持栈中严格单调，实际使用应根据实际选择，如 *例题1*
+    #+begin_src c++
+      #include <iostream>
+      using namespace std;
+
+      int arr[1000001];
+      int ans[1000001][2];
+      int stack[1000001];
+      int n, r;
+
+      void compute() {
+          r = 0;
+          int cur;
+          // 遍历压栈阶段
+          for (int i = 0; i < n; i++) {
+              while (r > 0 && arr[stack[r-1]] >= arr[i]) {
+                  cur = stack[--r];
+                  ans[cur][0] = r > 0 ? stack[r-1] : -1;
+                  ans[cur][1] = i;
+              }
+              stack[r++] = i;
+          }
+          // 清算阶段
+          while (r > 0) {
+              cur = stack[--r];
+              ans[cur][1] = -1;
+              ans[cur][0] = r > 0 ? stack[r-1] : -1;
+          }
+          // 修正阶段 当含有重复值时
+          // 从右往左修正，n-1位置的右侧答案一定是-1，不需要修正
+          for (int i = n - 2; i >= 0; i--) {
+              if (ans[i][1] != -1 && arr[ans[i][1]] == arr[i]) {
+                  ans[i][1] = ans[ans[i][1]][1];
+              }
+          }
+      }
+
+      int main() {
+          cin >> n;
+          for (int i = 0; i < n; i++) {
+              cin >> arr[i];
+          }
+          compute();
+          for (int i = 0; i < n; i++) {
+              cout << ans[i][0] << " " << ans[i][1] << endl;
+          }
+      }
+    #+end_src
+
+*** 例题一  [[https://leetcode.cn/problems/daily-temperatures/description/][每日温度]]
+
+#+begin_src c++
+    class Solution {
+  public:
+      vector<int> dailyTemperatures(vector<int>& temperatures) {
+          int n = temperatures.size();
+          vector<int> ans(n);
+          stack<int> st;
+          for (int i = 0; i < n; i++) {
+              // 该题方法： 相等也加入栈中
+              while (!st.empty() && temperatures[i] > temperatures[st.top()]) {
+                  int cur = st.top(); st.pop();
+                  ans[cur] = i - cur;
+              }
+              st.push(i);
+          }
+          return ans;
+      }
+  };
+#+end_src
+
+*** 例题二  [[https://leetcode.cn/problems/sum-of-subarray-minimums/description/][子数组的最小值之和]]
+
+#+begin_src c++
+  
+#+end_src
 ** 并查集(Union Find 又叫 Disjoint-Set)
 
 *** 并查集的使用是如下的场景
@@ -767,4 +1074,102 @@ dfs 解法 （最优）
           }
       }
   };
+#+end_src
+
+** 图
+
+*** 建图
+通常会给所有边的集合，利用这些边的集合进行建图，可以使用 *邻接矩阵、邻接表，链式前向星。*
+
+邻接表建图：
+#+begin_src c++
+  void createGraph(vector<vector<int, int, int>> edges) {
+      vector<vector<pair<int, int>>> graph; // 带权图，不带权将pair改成单数据类型
+      for (auto edge : edges) {
+          int from = edge[0], to = edge[1], wt = edge[2];
+          graph[from].push_back({to, wt}); // 有向图只需要这一行
+          graph[to].push_back(from, wt); // 无向图建法
+      }
+  }
+
+#+end_src
+*** 拓扑排序 TopologicalSort
+
+=排序方法= ：首先拿出图中入度为 0 的节点（没有前置条件的节点），将其加入队列，并将边所指向的节点的入度减 1，如果减一后入度变为 0，将其加入队列，如此往复，知道队列为空，同时记录已排序的节点个数，如果不等于图中节点个数
+         意味着不能进行拓扑排序（存在环）
+
+[[https://leetcode.cn/problems/course-schedule-ii/description/][模板题1]]
+
+#+begin_src c++
+  class Solution {
+  public:
+      vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+          vector<vector<int>> g(numCourses, vector<int>());
+          vector<int> indegree(numCourses);
+          for (auto p : prerequisites) {
+              indegree[p[0]]++;
+              g[p[1]].push_back(p[0]);
+          }
+          vector<int> queue(numCourses);
+          int l = 0, r = 0;
+          for (int i = 0; i < numCourses; i++) {
+              if (indegree[i] == 0) {
+                  queue[r++] = i;
+              }
+          }
+          int cnt = 0;
+          while (l < r) {
+              int cur = queue[l++];
+              for (auto to : g[cur]) {
+                  if (--indegree[to] == 0) {
+                      queue[r++] = to;
+                  }
+              }
+              cnt++;
+          }
+          return cnt == numCourses ? queue : vector<int>();
+      }
+  };
+#+end_src
+
+[[https://www.nowcoder.com/practice/88f7e156ca7d43a1a535f619cd3f495c][模板题2]]
+#+begin_src c++
+  #include <iostream>
+  #include <vector>
+  using namespace std;
+
+  int main() {
+      int n, m;
+      cin >> n >> m;
+      vector<vector<int>> g(n+1, vector<int>());
+      vector<int> indegree(n+1);
+      while (m--) {
+          int a, b;
+          cin >> a >> b;
+          g[a].push_back(b);
+          indegree[b]++;
+      }
+      vector<int> queue(n);
+      int l = 0, r = 0;
+      for (int i = 1; i <= n; i++) {
+          if (indegree[i] == 0) {
+              queue[r++] = i;
+          }
+      }
+      int cnt = 0;
+      while (l < r) {
+          int cur = queue[l++];
+          for (auto next : g[cur]) {
+              if (--indegree[next] == 0) {
+                  queue[r++] = next;
+              }
+          }
+          cnt++;
+      }
+      if (cnt != n) {cout << -1 << endl; return 0;}
+      for (int i = 0; i < n-1; i++) {
+          cout << queue[i] << " ";
+      }
+      cout << queue[n-1] <<endl;
+  }
 #+end_src

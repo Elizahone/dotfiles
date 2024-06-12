@@ -471,7 +471,8 @@ Auto Save
     :init
     (add-hook 'org-mode-hook #'org-indent-mode)
     :config
-    (with-eval-after-load 'org (global-org-modern-mode)))
+    (with-eval-after-load 'org (global-org-modern-mode))
+    (setq org-hide-emphasis-markers t))
 
   (use-package ob-R)
   (org-babel-do-load-languages
