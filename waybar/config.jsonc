@@ -9,7 +9,7 @@
     // Choose the order of the modules
 
     "modules-left":[  "idle_inhibitor", "group/group-power", "hyprland/workspaces", "group/volume","group/misc"],
-    "modules-center": ["custom/media","wlr/taskbar"],
+    "modules-center": [],
     "modules-right":["group/tools", "backlight", "keyboard-state",  "battery", "battery#bat2", "network", "tray",  "clock"],
     // Modules configuration
     "hyprland/workspaces": {

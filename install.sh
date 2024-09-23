@@ -39,3 +39,10 @@ if [ -e $Target ];then
 fi
 ln -s $(pwd)/$file $Target
 
+### waybar
+file=waybar
+Target=$HOME/.config/$file
+if [ -e $Target ];then
+    rm -rf $Target    
+fi
+ln -s $(pwd)/$file $Target

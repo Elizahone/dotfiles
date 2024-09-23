@@ -172,7 +172,6 @@ Auto Save
 #+end_src
 
 * Completion
-
 ** 括号补全
 
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
@@ -271,7 +270,7 @@ Auto Save
 ** Themes
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (set-face-attribute 'default nil :height 160)
-  ;; (add-to-list 'default-frame-alist '(alpha-background . 95))
+  (add-to-list 'default-frame-alist '(alpha-background . 93))
   (global-display-line-numbers-mode t)
   (use-package doom-themes
     :demand t
@@ -485,7 +484,6 @@ Auto Save
    '((R . t)))
 #+END_SRC
 * Meow
-
 ** 按键绑定
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -596,6 +594,10 @@ Auto Save
     ;;     (motion . "M")
     ;;     (keypad . "K")))
     )
+#+end_src
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package exec-path-from-shell
+    :ensure t)
 #+end_src
 * Program-Conf
 ** treesitter
