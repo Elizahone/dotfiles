@@ -463,7 +463,6 @@ Auto Save
 #+end_src
 * Orgmode
 ** org-modern
-
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
   (setq org-image-actual-width nil)
   (require 'org-tempo) ;; 增加模板
