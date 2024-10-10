@@ -167,6 +167,7 @@ Auto Save
           '(meow-motion-mode-p
             meow-normal-mode-p
             rime-predicate-current-uppercase-letter-p)) ;; normal 模式自动进入临时英文模式
+    (setq rime-user-data-dir "~/.local/share/fcitx5/rime")
     :custom
     (default-input-method "rime"))
 #+end_src
@@ -269,7 +270,9 @@ Auto Save
 * UI
 ** Themes
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
-  (set-face-attribute 'default nil :height 160)
+  (set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 24))
+  (set-fontset-font t 'unicode (font-spec :family "STKaiti" :size 26))
+  
   (add-to-list 'default-frame-alist '(alpha-background . 93))
   (global-display-line-numbers-mode t)
   (use-package doom-themes
@@ -278,7 +281,7 @@ Auto Save
     :config
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-    :init (load-theme 'doom-tokyo-night t))
+    :init (load-theme 'doom-tokyo-night nil))
   (use-package all-the-icons
     :defer t
     :ensure t
@@ -688,5 +691,19 @@ Auto Save
     ("C-c w f" . 'find-file-other-window)
     ("C-c w j" . 'split-window-vertically)
     ("C-c w l" . 'split-window-horizontally))
+#+end_src
+* PDFs
+在系统中运行 *pacman -S --needed libpng zlib poppler-glib* 
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package pdf-tools
+    :defer t
+    :ensure t
+    :commands (pdf-tools-install)
+    :mode "\\.pdf\\''"
+    :bind (:map pdf-view-mode-map
+                ("C-f" . pdf-view-next-page)
+                ("C-b" . pdf-view-previous-page))
+    :init (pdf-tools-install))
+  (add-hook 'pdf-view-mode-hook #'(lambda () (interactive) (display-line-numbers-mode -1)))
 #+end_src
 

@@ -46,3 +46,12 @@ if [ -e $Target ];then
     rm -rf $Target    
 fi
 ln -s $(pwd)/$file $Target
+
+### yazi
+file=yazi
+Target=$HOME/.config/$file
+if [ -e $Target ];then
+    rm -rf $Target    
+fi
+ln -s $(pwd)/$file $Target
+

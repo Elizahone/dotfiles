@@ -2478,6 +2478,6 @@ map kitty_mod+enter launch --cwd=current
 
 
 # BEGIN_KITTY_THEME
-# Belafonte Day
+# zenburned
 include current-theme.conf
 # END_KITTY_THEME

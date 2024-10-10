@@ -1,0 +1,18 @@
+亮度管理
+
+light(aur)
+
+GTK 设置
+
+nwg-look
+
+护眼模式
+
+gammastep
+
+
+输入法配置
+fcitx5 fcitx5-config-tools fcitx5-{qt,gtk}
+
+notification
+mako and libnotify(notify-send)
