@@ -272,16 +272,16 @@ Auto Save
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 24))
   (set-fontset-font t 'unicode (font-spec :family "STKaiti" :size 26))
-  
+
   (add-to-list 'default-frame-alist '(alpha-background . 93))
   (global-display-line-numbers-mode t)
-  (use-package doom-themes
-    :demand t
-    :ensure t
-    :config
-    (setq doom-themes-enable-bold t
-          doom-themes-enable-italic t)
-    :init (load-theme 'doom-tokyo-night nil))
+  ;; (use-package doom-themes
+  ;;   :demand t
+  ;;   :ensure t
+  ;;   :config
+  ;;   (setq doom-themes-enable-bold t
+  ;;         doom-themes-enable-italic t)
+  ;;   :init (load-theme 'doom-tokyo-night nil))
   (use-package all-the-icons
     :defer t
     :ensure t
@@ -480,10 +480,10 @@ Auto Save
     (with-eval-after-load 'org (global-org-modern-mode))
     (setq org-hide-emphasis-markers t))
 
-  (use-package ob-R)
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)))
+  ;; (use-package ob-R)
+  ;; (org-babel-do-load-languages
+  ;;  'org-babel-load-languages
+  ;;  '((R . t)))
 #+END_SRC
 * Meow
 ** 按键绑定
@@ -553,13 +553,15 @@ Auto Save
    '("l" . meow-right)
    '("L" . meow-right-expand)
    '("m" . meow-join)
+   '("M" . scroll-down)
    '("n" . meow-search)
+   '("N" . scroll-up)
    '("O" . meow-block)
    '("o" . meow-to-block)
    '("p" . meow-yank)
    '("q" . meow-quit)
    '("Q" . meow-goto-line)
-   '("x" . meow-replace)
+   '("r" . meow-line)
    '("R" . meow-swap-grab)
    '("s" . meow-kill)
    '("t" . meow-till)
@@ -568,7 +570,7 @@ Auto Save
    '("v" . meow-visit)
    '("w" . meow-mark-word)
    '("W" . meow-mark-symbol)
-   '("r" . meow-line)
+   '("x" . meow-replace)
    '("X" . meow-goto-line)
    '("y" . meow-save)
    '("Y" . meow-sync-grab)
@@ -617,11 +619,11 @@ Auto Save
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package prog-mode
     :config
-    (global-prettify-symbols-mode)
+        (global-prettify-symbols-mode)
     (defun indicate-buffer-boundaries-left ()
       (setq indicate-buffer-boundaries 'left))
     (add-hook 'prog-mode-hook 'indicate-buffer-boundaries-left))
-#+end_src
+    #+end_src
 ** Eglot
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (defun stop-spamming-pls-2 (orig-fun &rest args)
@@ -671,6 +673,7 @@ Auto Save
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (use-package pyvenv
     :ensure t)
+  (add-hook 'python-ts-mode-hook 'exec-path-from-shell-initialize)
 #+end_src
 * Project
 
@@ -694,10 +697,10 @@ Auto Save
 #+end_src
 * PDFs
 在系统中运行 *pacman -S --needed libpng zlib poppler-glib* 
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp :tangle no
   (use-package pdf-tools
     :defer t
-    :ensure t
+    :ensure nil
     :commands (pdf-tools-install)
     :mode "\\.pdf\\''"
     :bind (:map pdf-view-mode-map

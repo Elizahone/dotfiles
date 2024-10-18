@@ -134,6 +134,8 @@ function cd {
 	builtin cd "$@";ls
 }
 
+export PATH=$PATH:/$HOME/.local/share/nvim/mason/bin
+
 alias vi="emacsclient"
 alias ls="lsd -F"
 alias ll="lsd -lF"
