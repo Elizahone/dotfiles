@@ -260,7 +260,7 @@
     "network": {
         "tooltip": true,
         "format-wifi": "{icon} ",
-        "format-icons": ["󰤟", "󰤢", "󰤥"],
+        "format-icons": ["󰤟 ", "󰤢 ", "󰤥 "],
         //  "format-wifi": "<i class='fa-solid fa-wifi-slash'></i>",
         "rotate": 0,
         "format-ethernet": "󰈀 ",

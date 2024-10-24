@@ -21,3 +21,7 @@ mako and libnotify(notify-send)
 nvidia 驱动 btw fuck nvidia
 使用 envycontrol 生成大部分配置文件
 在 /etc/modprobe.d/nvidia.conf 添加 `options nvidia.ko NVreg_PreserveVideoMemoryAllocations=1`然后可以正常使用suspend
+
+
+视频查看  mpv
+图片查看  imv
