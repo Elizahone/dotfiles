@@ -1,8 +1,4 @@
 #! /bin/bash
-
-
-
-
 ### Hyprland
 file=hypr
 Target=$HOME/.config/$file
@@ -55,3 +51,10 @@ if [ -e $Target ];then
 fi
 ln -s $(pwd)/$file $Target
 
+# mako
+file=mako
+Target=$HOME/.config/$file
+if [ -e $Target ];then
+    rm -rf $Target    
+fi
+ln -s $(pwd)/$file $Target

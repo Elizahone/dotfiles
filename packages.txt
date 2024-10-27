@@ -12,7 +12,7 @@ gammastep
 
 
 输入法配置
-fcitx5 fcitx5-config-tools fcitx5-{qt,gtk}
+fcitx5 fcitx5-configtool fcitx5-{qt,gtk}
 
 notification
 mako and libnotify(notify-send)
@@ -25,3 +25,7 @@ nvidia 驱动 btw fuck nvidia
 
 视频查看  mpv
 图片查看  imv
+
+截图录屏
+obs-studio
+grim  slurp

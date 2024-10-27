@@ -474,6 +474,8 @@ Auto Save
                                  :append :local)))
   (use-package org-modern
     :ensure t
+    :custom
+    (org-modern-star 'replace)
     :init
     (add-hook 'org-mode-hook #'org-indent-mode)
     :config
