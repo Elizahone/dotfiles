@@ -1173,3 +1173,46 @@ dfs 解法 （最优）
       cout << queue[n-1] <<endl;
   }
 #+end_src
+*** Dijkstra
+我们的目标是计算出最终的 dis 数组。
+
+- 首先更新起点 k 到其邻居 y 的最短路，即更新 dis[y] 为 g[k][y]。
+- 然后取除了起点 k 以外的 dis[i] 的最小值，假设最小值对应的节点是 3。此时可以断言：dis[3] 已经是 k 到 3 的最短路长度，不可能有其它 k 到 3 的路径更短！反证法：假设存在更短的路径，那我们一定会从 k 出发经过一个点 u，它的 dis[u] 比 dis[3] 还要小，然后再经过一些边到达 3，得到更小的 dis[3]。但 dis[3] 已经是最小的了，并且图中没有负数边权，所以 u 是不存在的，矛盾。故原命题成立，此时我们得到了 dis[3] 的最终值。
+- 用节点 3 到其邻居 y 的边权 g[3][y] 更新 dis[y]：如果 dis[3]+g[3][y]<dis[y]，那么更新 dis[y] 为 dis[3]+g[3][y]，否则不更新。
+- 然后取除了节点 k,3 以外的 dis[i] 的最小值，重复上述过程。
+- 由数学归纳法可知，这一做法可以得到每个点的最短路。当所有点的最短路都已确定时，算法结束。
+
+#+BEGIN_SRC C++
+   class Solution {
+  public:
+      int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+          vector<vector<int>> g(n, vector<int>(n, INT_MAX / 2)); // 邻接矩阵
+          for (auto& t : times) {
+              g[t[0] - 1][t[1] - 1] = t[2];
+          }
+          vector<int> dis(n, INT_MAX / 2), done(n); // 距离数据和已完成数组
+          dis[k-1] = 0;
+          while (true) {
+              int x = -1;
+              // 找到为完成 done 的最小的节点，并标记为 done
+              for (int i = 0; i < n; i++) {
+                  if (!done[i] && (x < 0 || dis[i] < dis[x])) {
+                      x = i;
+                  }
+              }
+              // 如果x为-1，意味着所有的节点都 done 了
+              if (x < 0) {
+                  return ranges::max(dis);
+              }
+              // 如果 x 为 ，意味着有节点不可答
+              if (dis[x] == INT_MAX / 2) {
+                  return -1;
+              }
+              done[x] = true;
+              for (int y = 0; y < n; y++) {
+                  dis[y] =  min(dis[y], dis[x] + g[x][y]);
+              }
+          }
+      }
+  };
+#+END_SRC

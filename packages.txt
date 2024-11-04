@@ -1,5 +1,7 @@
-亮度管理
+声音控制
+pavucontrol
 
+亮度管理
 light(aur)
 
 GTK 设置

@@ -137,6 +137,6 @@ function cd() {
 
 alias ls="lsd -F"
 alias ll="lsd -alF"
-
+alias tree="lsd --tree --depth=3"
 
 eval "$(starship init zsh)"

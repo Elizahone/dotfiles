@@ -275,13 +275,13 @@ Auto Save
 
   (add-to-list 'default-frame-alist '(alpha-background . 93))
   (global-display-line-numbers-mode t)
-  ;; (use-package doom-themes
-  ;;   :demand t
-  ;;   :ensure t
-  ;;   :config
-  ;;   (setq doom-themes-enable-bold t
-  ;;         doom-themes-enable-italic t)
-  ;;   :init (load-theme 'doom-tokyo-night nil))
+  (use-package doom-themes
+    :demand t
+    :ensure t
+    :config
+    (setq doom-themes-enable-bold t
+          doom-themes-enable-italic t)
+    :init (load-theme 'doom-tokyo-night nil))
   (use-package all-the-icons
     :defer t
     :ensure t
