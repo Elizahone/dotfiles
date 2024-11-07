@@ -1182,6 +1182,7 @@ dfs 解法 （最优）
 - 然后取除了节点 k,3 以外的 dis[i] 的最小值，重复上述过程。
 - 由数学归纳法可知，这一做法可以得到每个点的最短路。当所有点的最短路都已确定时，算法结束。
 
+=朴素Dijkstra= ：适用于稠密图
 #+BEGIN_SRC C++
    class Solution {
   public:
@@ -1216,3 +1217,65 @@ dfs 解法 （最优）
       }
   };
 #+END_SRC
+
+=堆优化Dijkstra= :适用于稀疏图，并且使用堆优化
+
+问：为什么代码要判断 d > dis[i][j]？可以不写 continue 吗？
+
+答：对于同一个点 (i,j)，例如先入堆一个比较大的 dis[i][j]=10，后面又把 dis[i][j] 更新成 5。之后这个 5 会先出堆，
+然后再把 10 出堆。10 出堆时候是没有必要去更新周围邻居的最短路的，因为 5 出堆之后，就已经把邻居的最短路更新过了，用 10 是无法把邻居的最短路变得更短的，所以直接 continue。本题由于只有 4 个邻居，写不写其实无所谓。但如果是一般图，不写这个复杂度就不对了，可能会超时。
+
+
+#+BEGIN_SRC C++
+  class Solution {
+  public:
+      int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+          vector<vector<pair<int, int>>> g(n); // 邻接表
+          for (auto& t : times) {
+              g[t[0] - 1].emplace_back(t[1] - 1, t[2]);
+          }
+
+          vector<int> dis(n, INT_MAX);
+          dis[k - 1] = 0;
+          priority_queue<pair<int, int>, vector<pair<int, int>>, greater<>> pq;
+          pq.emplace(0, k - 1);
+          while (!pq.empty()) {
+              auto [dx, x] = pq.top();
+              pq.pop();
+              if (dx > dis[x]) { // x 之前出堆过
+                  continue;
+              }
+              for (auto &[y, d] : g[x]) {
+                  int new_dis = dx + d;
+                  if (new_dis < dis[y]) {
+                      dis[y] = new_dis; // 更新 x 的邻居的最短路
+                      pq.emplace(new_dis, y);
+                  }
+              }
+          }
+          int mx = ranges::max(dis);
+          return mx < INT_MAX ? mx : -1;
+      }
+  };
+
+#+END_SRC
+
+** 背包问题
+*** 0-1 背包问题
+每种商品只能只有两种可能：选（1）或 不选（0），因此动态转移方程为：
+=dp[i][j] = max(dp[i-1][j], dp[i-1][j-w[i]]+val[i])= 在0-i范围内选取，容量不超过j，最终结果为 _dp[n][j]_ 。
+
+*** 有依赖的背包
+
+*** 分组背包
+所有商品经过分组，每个分组最多选择一个。 只需要对每个分组进行展开，对于每个分组依然是0-1背包。
+
+*** 完全背包
+和 0-1 背包的区别就是每个商品都可以无限选择，因此，当在 0-i 范围内选择时，假如第 i 件商品不选择（选择），那么子问题依然是 0-i 的范围内选择。
+=dp[i][j] = max(dp[i][j], dp[i][j-w[i]]+val[i])=
+
+*** 多重背包
+当每个商品有其数量限制，不同于0-1背包（1个），完全背包（无限）。
++ 解法：枚举每个商品选取几件. =dp[i][j] = max(dp[i-1][j-w[i]], dp[i-1][j-2*w[i]], ... , dp[i][j])=
+  + 优化：
+*** 混合背包
