@@ -144,6 +144,7 @@ function cd() {
 	builtin cd $@;lsd
 }
 
+
 alias ls="lsd -F"
 alias ll="lsd -alF"
 alias tree="lsd --tree --depth=3"
