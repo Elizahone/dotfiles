@@ -2,8 +2,13 @@
 #+STARTUP: overview
 
 * KeyPAD
-** 窗口管理
+** COMMENT 窗口管理
 
+#+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
+  (global-unset-key (kbd "C-_"))
+  (global-set-key (kbd "C-+") 'text-scale-increase)
+  (global-set-key (kbd "C-_") 'text-scale-decrease)
+#+END_SRC 
 * Init-Config
 ** early-init.el
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/early-init.el
