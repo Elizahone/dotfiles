@@ -1,11 +1,11 @@
-format = '''$hostname $directory $fill$python$git_branch$shell 
-> '''
-
+format = '''
+[┌](bold blue) $hostname $directory $fill$python$git_branch$shell
+[└─>](bold blue) '''
 
 
 [hostname]
 ssh_only = false
-format = '[$hostname](bold red)   '
+format = '[$hostname](bold red) [ ](blue) '
 disabled = false
 
 
@@ -25,3 +25,8 @@ disabled = false
 
 [fill]
 symbol = ' '
+
+[directory]
+truncation_length = 12
+truncation_symbol = '…/'
+read_only = "  "
