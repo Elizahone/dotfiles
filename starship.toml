@@ -1,14 +1,21 @@
 format = '''
-[┌](bold blue) $hostname $directory $fill$python$git_branch$shell
-[└─>](bold blue) '''
+[╭─](bold blue) $hostname$os $directory $fill$python$git_branch$shell
+[╰─>](bold blue) '''
 
 
 [hostname]
 ssh_only = false
-format = '[$hostname](bold red) [ ](blue) '
+format = '[$hostname](bold red) '
 disabled = false
 
-
+[os]
+format = '$symbol'
+style = "bold blue"
+disabled = false
+[os.symbols]
+Windows = " "
+Arch = "[ ](blue)"
+FreeBSD = "[󰱯 ](red)"
 
 [python]
 symbol = ''
