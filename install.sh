@@ -1,5 +1,5 @@
 #!/bin/bash
-dotfiles=(hypr kitty starship.toml tofi waybar yazi mako)
+dotfiles=(hypr kitty starship.toml tofi waybar yazi mako zed)
 DT_DIR=$HOME/dotfiles
 for dt in "${dotfiles[@]}"; do
 	target=$HOME/.config/$dt

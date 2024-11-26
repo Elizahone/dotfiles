@@ -1,5 +1,5 @@
 format = '''
-[╭─](bold blue) $hostname$os $directory $fill$python$git_branch$shell
+[╭─](bold blue) $hostname$os $directory $fill$python$git_branch 
 [╰─>](bold blue) '''
 
 
@@ -37,3 +37,7 @@ symbol = ' '
 truncation_length = 12
 truncation_symbol = '…/'
 read_only = "  "
+
+[cmd_duration]
+min_time = 500
+format = '[$duration](bold yellow)'
