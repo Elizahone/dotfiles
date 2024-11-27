@@ -144,6 +144,15 @@ function cd() {
 	builtin cd $@;lsd
 }
 
+
+function e() {
+  str=$@
+  if [[ "$str" == .* ]]; then
+    str="$PWD${str:1}"
+  fi
+  hyprctl dispatch exec "emacs --chdir $str" > /dev/null
+}
+
 export PATH=$PATH:$HOME/.local/share/nvim/mason/bin
 
 alias ls="lsd -F"

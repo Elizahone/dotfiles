@@ -642,7 +642,7 @@ Auto Save
   (advice-add 'eglot-handle-notification :around #'stop-spamming-pls-2)
 #+end_src
 ** ESS
-#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+#+begin_src emacs-lisp 
   (use-package ess
   :init
   (setq ess-style 'RStudio)
@@ -682,6 +682,14 @@ Auto Save
     :ensure t)
   (add-hook 'python-ts-mode-hook 'exec-path-from-shell-initialize)
 #+end_src
+** Rust
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package rust-mode
+    :mode "\\.rs\\'"
+    :interpreter "rust")
+#+end_src
+
 * Project
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
