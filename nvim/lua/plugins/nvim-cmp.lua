@@ -39,9 +39,10 @@ return {
                         keyword_pattern = [[\k\+]],
                     }
                 },
-		{
-			{name = "nvim_lua"}
-		},
+                {
+                    name = "lazydev",
+                    group_index = 0,
+                },
             },
             mapping = cmp.mapping.preset.insert({
                 ['<C-b>'] = cmp.mapping.scroll_docs(-4),
