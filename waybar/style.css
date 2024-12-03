@@ -5,13 +5,6 @@
     font-size: 14px;
 }
 
-#custom-notification {
-    font-family: "SourceCodePro";
-    font-size: 15px;
-    color: #A1BDCE;
-    margin: 2px 0px 0px 0px;
-}
-
 window#waybar {
     background: #0F0F17; 
     background: rgba(16, 16, 23, 0.8);
@@ -239,11 +232,7 @@ tooltip {
     padding-right: 0px;
     padding-left: 4px
 }
-#custom-notifications,
-#custom-spotify,
-#taskbar,
-#custom-theme,
-#custom-menu{
+#taskbar{
     color: #E8EDF0;
     background:  rgba(23, 23, 23, 0.0);
     margin: 0px 2px 0px 2px;
@@ -351,9 +340,3 @@ tooltip {
     color: #A1BDCE;
     font-size: 16px;
 }
-
-#group-minimized {
-    border-left: solid;
-    border-left-width: 0.5;
-}
-

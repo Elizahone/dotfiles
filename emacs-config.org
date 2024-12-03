@@ -275,27 +275,26 @@ Auto Save
 * UI
 ** Themes
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
-  (set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 24))
-  (set-fontset-font t 'unicode (font-spec :family "STKaiti" :size 26))
+    (set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 24))
+    (set-fontset-font t 'unicode (font-spec :family "STKaiti" :size 26))
 
-  (add-to-list 'default-frame-alist '(alpha-background . 93))
-  (global-display-line-numbers-mode t)
-  (use-package doom-themes
-    :demand t
-    :ensure t
-    :config
-    (setq doom-themes-enable-bold t
-          doom-themes-enable-italic t)
-    :init (load-theme 'doom-tokyo-night nil))
-  (use-package all-the-icons
-    :defer t
-    :ensure t
-    :if (display-graphic-p)) ;; 第一次运行时, M-x all-the-icon-install-fonts 安装字体.
+    (add-to-list 'default-frame-alist '(alpha-background . 93))
+    (global-display-line-numbers-mode t)
+    (use-package all-the-icons
+      :defer t
+      :ensure t
+      :if (display-graphic-p)) ;; 第一次运行时, M-x all-the-icon-install-fonts 安装字体.
 
-  (use-package all-the-icons-nerd-fonts
-    :ensure t)
-
-  ;; :init (load-theme 'doom-opera-light t))
+    (use-package all-the-icons-nerd-fonts
+      :ensure t)
+    (use-package doom-themes
+      :demand t
+      :ensure t
+      :config
+      (setq doom-themes-enable-bold t
+            doom-themes-enable-italic t)
+      :init (load-theme 'doom-tokyo-night nil))
+    ;; :init (load-theme 'doom-opera-light t))
 #+end_src
 
 ** doomline
@@ -594,10 +593,10 @@ Auto Save
     :ensure t
     :init
     (meow-global-mode 1)
+    (setq meow-use-clipboard 1)
     (bind-key "C-;" 'meow-normal-mode)
     :config
     (setq meow-keypad-leader-dispatch "C-c") ;; 进入 keypad 后直接按 c x h m g 以外的键直接翻译成 C-a key ,实现 leader key 效果
-    (setq meow-use-clipboard 1)
     (meow-setup)
         ;; (setq meow-replace-state-name-list
     ;;   '((normal . "N")
