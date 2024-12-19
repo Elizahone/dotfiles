@@ -1,7 +1,9 @@
+# format = '''
+# [╭─](bold blue) $hostname$os $directory $fill$python$git_branch 
+# [╰─>](bold blue) '''
 format = '''
-[╭─](bold blue) $hostname$os $directory $fill$python$git_branch 
+[╭─](bold blue) $hostname$os $directory $fill$python$git_branch
 [╰─>](bold blue) '''
-
 
 [hostname]
 ssh_only = false
@@ -14,9 +16,9 @@ style = "bold blue"
 disabled = false
 [os.symbols]
 Windows = " "
-Arch = "[ ](blue)"
+Arch = "[ ](blod blue)"
 FreeBSD = "[󰱯 ](red)"
-
+Gentoo = " "
 [python]
 symbol = ''
 pyenv_version_name = true

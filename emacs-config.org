@@ -106,15 +106,15 @@
   (fset 'yes-or-no-p 'y-or-n-p)
 
   ;; 设置 tab 键
-  (setq-default indent-tabs-mode nil)
-  (setq-default tab-width 4)
-  (setq-default standard-indent 4)
+  (setq-default indent-tabs-mode nil
+                tab-width 4
+                standard-indent 4
+                inhibit-splash-screen t)
   (setq c-basic-offset 4)
   ;; 关闭自动保存 #
   (setq auto-save-default nil)
   ;; 关闭备份 ~
   (setq  make-backup-files nil)
-  (setq x-select-enable-clipboard-manager nil)
 #+END_SRC
 
 记住光标历史，记住上个命令,自动 *revert buffer*
@@ -275,10 +275,10 @@ Auto Save
 * UI
 ** Themes
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
-  (set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 24))
-  (set-fontset-font t 'unicode (font-spec :family "STKaiti" :size 26))
+  (set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 20))
+  ;; (set-fontset-font t 'unicode (font-spec :family "STKaiti" :size 26))
 
-  (add-to-list 'default-frame-alist '(alpha-background . 93))
+  ;; (add-to-list 'default-frame-alist '(alpha-background . 93)) ;
   (global-display-line-numbers-mode t)
   (use-package doom-themes
     :demand t
@@ -286,7 +286,7 @@ Auto Save
     :config
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-    :init (load-theme 'doom-tokyo-night nil))
+    :init (load-theme 'doom-palenight nil))
   (use-package all-the-icons
     :defer t
     :ensure t
@@ -295,31 +295,41 @@ Auto Save
   (use-package all-the-icons-nerd-fonts
     :ensure t)
 
+  (use-package indent-bars
+    :ensure t
+  :custom
+  (indent-bars-no-descend-string t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  (indent-bars-prefer-character t)
+  (indent-bars-treesit-scope '((python function_definition class_definition for_statement
+                                       if_statement with_statement while_statement)))
+  :hook ((prog-mode yaml-mode) . indent-bars-mode)
+  :config (require 'indent-bars-ts))
   ;; :init (load-theme 'doom-opera-light t))
 #+end_src
 
 ** doomline
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
-(use-package minions
-  :defer t
-  :ensure t
-  :hook doom-modeline-mode)
-(use-package doom-modeline
-  :ensure t
-  :hook (after-init . doom-modeline-mode)
-  :custom
-  (doom-modeline-unicode-fallback t)
-  :config
-  (setq doom-modeline-height 1) ; optional
-  (custom-set-faces
-   '(mode-line ((t (:height 1.2))))
-   '(mode-line-active ((t (:height 0.85)))) ; For 29+
-   '(mode-line-inactive ((t (:height 0.85))))))
-(use-package which-key
-  :defer nil
-  :ensure t
-  :custom (which-key-idle-delay 1)
-  :config (which-key-mode))
+  (use-package minions
+    :defer t
+    :ensure t
+    :hook doom-modeline-mode)
+  (use-package doom-modeline
+    :ensure t
+    :hook (after-init . doom-modeline-mode)
+    :custom
+    (doom-modeline-unicode-fallback t)
+    :config
+    (setq doom-modeline-height 1) ; optional
+    (custom-set-faces
+     '(mode-line ((t (:height 1.2))))
+     '(mode-line-active ((t (:height 0.85)))) ; For 29+
+     '(mode-line-inactive ((t (:height 0.85))))))
+  (use-package which-key
+    :defer nil
+    :ensure t
+    :custom (which-key-idle-delay 1)
+    :config (which-key-mode))
 
 #+end_src
 
@@ -358,109 +368,109 @@ Auto Save
 #+end_src
 ** Popper
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
-   (use-package popper
-    :ensure t
-    :defines popper-echo-dispatch-actions
-    :commands popper-group-by-directory
-    :bind (:map popper-mode-map
-                ("s-`" . popper-toggle-latest)
-                ("s-o"   . popper-cycle)
-                ("M-`" . popper-toggle-type))
-    :hook (emacs-startup . popper-mode)
-    :init
-    (setq popper-reference-buffers
-          '("\\*Messages\\*"
-            "Output\\*$" "\\*Pp Eval Output\\*$"
-            "\\*Compile-Log\\*"
-            "\\*Completions\\*"
-            "\\*Warnings\\*"
-            "\\*Flymake diagnostics.*\\*"
-            "\\*Async Shell Command\\*"
-            "\\*Apropos\\*"
-            "\\*Backtrace\\*"
-            "\\*prodigy\\*"
-            "\\*Calendar\\*"
-            "\\*Embark Actions\\*"
-            "\\*Finder\\*"
-            "\\*Kill Ring\\*"
-            "\\*Embark Export:.*\\*"
-            "\\*Edit Annotation.*\\*"
-            "\\*Flutter\\*"
-            bookmark-bmenu-mode
-            lsp-bridge-ref-mode
-            comint-mode
-            compilation-mode
-            help-mode helpful-mode
-            tabulated-list-mode
-            Buffer-menu-mode
-            occur-mode
-            gnus-article-mode devdocs-mode
-            grep-mode occur-mode rg-mode deadgrep-mode ag-mode pt-mode
-            ivy-occur-mode ivy-occur-grep-mode
-            process-menu-mode list-environment-mode cargo-process-mode
-            youdao-dictionary-mode osx-dictionary-mode fanyi-mode
+  (use-package popper
+   :ensure t
+   :defines popper-echo-dispatch-actions
+   :commands popper-group-by-directory
+   :bind (:map popper-mode-map
+               ("s-`" . popper-toggle-latest)
+               ("s-o"   . popper-cycle)
+               ("M-`" . popper-toggle-type))
+   :hook (emacs-startup . popper-mode)
+   :init
+   (setq popper-reference-buffers
+         '("\\*Messages\\*"
+           "Output\\*$" "\\*Pp Eval Output\\*$"
+           "\\*Compile-Log\\*"
+           "\\*Completions\\*"
+           "\\*Warnings\\*"
+           "\\*Flymake diagnostics.*\\*"
+           "\\*Async Shell Command\\*"
+           "\\*Apropos\\*"
+           "\\*Backtrace\\*"
+           "\\*prodigy\\*"
+           "\\*Calendar\\*"
+           "\\*Embark Actions\\*"
+           "\\*Finder\\*"
+           "\\*Kill Ring\\*"
+           "\\*Embark Export:.*\\*"
+           "\\*Edit Annotation.*\\*"
+           "\\*Flutter\\*"
+           bookmark-bmenu-mode
+           lsp-bridge-ref-mode
+           comint-mode
+           compilation-mode
+           help-mode helpful-mode
+           tabulated-list-mode
+           Buffer-menu-mode
+           occur-mode
+           gnus-article-mode devdocs-mode
+           grep-mode occur-mode rg-mode deadgrep-mode ag-mode pt-mode
+           ivy-occur-mode ivy-occur-grep-mode
+           process-menu-mode list-environment-mode cargo-process-mode
+           youdao-dictionary-mode osx-dictionary-mode fanyi-mode
 
-            "^\\*eshell.*\\*.*$" eshell-mode
-            "^\\*shell.*\\*.*$"  shell-mode
-            "^\\*terminal.*\\*.*$" term-mode
-            "^\\*vterm.*\\*.*$"  vterm-mode
-            "^\\*R.*\\*.*$"  ess-R-mode
+           "^\\*eshell.*\\*.*$" eshell-mode
+           "^\\*shell.*\\*.*$"  shell-mode
+           "^\\*terminal.*\\*.*$" term-mode
+           "^\\*vterm.*\\*.*$"  vterm-mode
+           "^\\*R.*\\*.*$"  ess-R-mode
 
 
-            "\\*DAP Templates\\*$" dap-server-log-mode
-            "\\*ELP Profiling Restuls\\*" profiler-report-mode
-            "\\*Flycheck errors\\*$" " \\*Flycheck checker\\*$"
-            "\\*Paradox Report\\*$" "\\*package update results\\*$" "\\*Package-Lint\\*$"
-            "\\*[Wo]*Man.*\\*$"
-            "\\*ert\\*$" overseer-buffer-mode
-            "\\*gud-debug\\*$"
-            "\\*lsp-help\\*$" "\\*lsp session\\*$"
-            "\\*quickrun\\*$"
-            "\\*tldr\\*$"
-            "\\*vc-.*\\*$"
-            "\\*eldoc\\*"
-            "^\\*elfeed-entry\\*$"
-            "^\\*macro expansion\\**"
+           "\\*DAP Templates\\*$" dap-server-log-mode
+           "\\*ELP Profiling Restuls\\*" profiler-report-mode
+           "\\*Flycheck errors\\*$" " \\*Flycheck checker\\*$"
+           "\\*Paradox Report\\*$" "\\*package update results\\*$" "\\*Package-Lint\\*$"
+           "\\*[Wo]*Man.*\\*$"
+           "\\*ert\\*$" overseer-buffer-mode
+           "\\*gud-debug\\*$"
+           "\\*lsp-help\\*$" "\\*lsp session\\*$"
+           "\\*quickrun\\*$"
+           "\\*tldr\\*$"
+           "\\*vc-.*\\*$"
+           "\\*eldoc\\*"
+           "^\\*elfeed-entry\\*$"
+           "^\\*macro expansion\\**"
 
-            "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"
-            "\\*Gofmt Errors\\*$" "\\*Go Test\\*$" godoc-mode
-            "\\*docker-containers\\*" "\\*docker-images\\*" "\\*docker-networks\\*" "\\*docker-volumes\\*"
-            "\\*prolog\\*" inferior-python-mode inf-ruby-mode swift-repl-mode
-            "\\*rustfmt\\*$" rustic-compilation-mode rustic-cargo-clippy-mode
-            rustic-cargo-outdated-mode rustic-cargo-test-mode))
+           "\\*Agenda Commands\\*" "\\*Org Select\\*" "\\*Capture\\*" "^CAPTURE-.*\\.org*"
+           "\\*Gofmt Errors\\*$" "\\*Go Test\\*$" godoc-mode
+           "\\*docker-containers\\*" "\\*docker-images\\*" "\\*docker-networks\\*" "\\*docker-volumes\\*"
+           "\\*prolog\\*" inferior-python-mode inf-ruby-mode swift-repl-mode
+           "\\*rustfmt\\*$" rustic-compilation-mode rustic-cargo-clippy-mode
+           rustic-cargo-outdated-mode rustic-cargo-test-mode))
 
-    (when (display-grayscale-p)
-      (setq popper-mode-line
-            '(:eval
-              (concat
-               (propertize " " 'face 'mode-line-emphasis)
-               'mode-line-emphasis)
-               (propertize " " 'face 'mode-line-emphasis))))
+   ;; (when (display-grayscale-p)
+   ;;   (setq popper-mode-line
+   ;;         '(:eval
+   ;;           (concat
+   ;;            (propertize " " 'face 'mode-line-emphasis)
+   ;;            'mode-line-emphasis)
+   ;;            (propertize " " 'face 'mode-line-emphasis))))
 
-    (setq popper-echo-dispatch-actions t)
-    (setq popper-group-function nil)
-    :config
-    (popper-echo-mode 1)
+   (setq popper-echo-dispatch-actions t)
+   (setq popper-group-function nil)
+   :config
+   (popper-echo-mode 1)
 
-    (with-no-warnings
-      (defun my-popper-fit-window-height (win)
-        "Determine the height of popup window WIN by fitting it to the buffer's content."
-        (fit-window-to-buffer
-         win
-         (floor (frame-height) 3)
-         (floor (frame-height) 3)))
-      (setq popper-window-height #'my-popper-fit-window-height)
+   (with-no-warnings
+     (defun my-popper-fit-window-height (win)
+       "Determine the height of popup window WIN by fitting it to the buffer's content."
+       (fit-window-to-buffer
+        win
+        (floor (frame-height) 3)
+        (floor (frame-height) 3)))
+     (setq popper-window-height #'my-popper-fit-window-height)
 
-      (defun popper-close-window-hack (&rest _)
-        "Close popper window via `C-g'."
-        ;; `C-g' can deactivate region
-        (when (and (called-interactively-p 'interactive)
-                   (not (region-active-p))
-                   popper-open-popup-alist)
-          (let ((window (caar popper-open-popup-alist)))
-            (when (window-live-p window)
-              (delete-window window)))))
-      (advice-add #'keyboard-quit :before #'popper-close-window-hack)))
+     (defun popper-close-window-hack (&rest _)
+       "Close popper window via `C-g'."
+       ;; `C-g' can deactivate region
+       (when (and (called-interactively-p 'interactive)
+                  (not (region-active-p))
+                  popper-open-popup-alist)
+         (let ((window (caar popper-open-popup-alist)))
+           (when (window-live-p window)
+             (delete-window window)))))
+     (advice-add #'keyboard-quit :before #'popper-close-window-hack)))
 
 #+end_src
 ** Treemacs
@@ -470,13 +480,38 @@ Auto Save
     :ensure t)
 #+end_src
 * Orgmode
+** org-appear
+[[https://github.com/awth13/org-appear][HomePage]] : A package can auto expand orgmode's elements when your cursor on it such as links,etc.
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package org-appear
+    :ensure t
+    :config
+    (setq org-appear-autolinks t) ;; auto expand links
+    (setq org-appear-autoentities t)
+    (setq org-appear-autokeywords t)
+    (setq org-appear-inside-latex t)
+    (setq org-appear-autosubmarkers t)
+    (setq org-appear-delay 0.3))
+#+end_src
 ** org-modern
+
+org-modern 可以让orgmode的显示更加美观
+
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
   (setq org-image-actual-width nil)
   (require 'org-tempo) ;; 增加模板
   (add-hook 'org-mode-hook
             (lambda () (add-hook 'after-save-hook #'org-babel-tangle
                                  :append :local)))
+
+
+  (use-package org
+    :ensure nil
+    :hook
+    (org-mode-hook . yas-minor-mode)
+    :init
+    (add-hook 'org-mode-hook 'org-appear-mode))
   (use-package org-modern
     :ensure t
     :custom
@@ -689,7 +724,11 @@ Auto Save
     :mode "\\.rs\\'"
     :interpreter "rust")
 #+end_src
-
+** Dape
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package dape
+    :ensure t)
+#+end_src
 * Project
 
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
@@ -709,6 +748,41 @@ Auto Save
     ("C-c w f" . 'find-file-other-window)
     ("C-c w j" . 'split-window-vertically)
     ("C-c w l" . 'split-window-horizontally))
+#+end_src
+* Edit
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+  (use-package rainbow-delimiters
+    :ensure t
+    :hook (prog-mode . rainbow-delimiters-mode))
+ #+end_src
+* clipboard
+
+[[https://www.emacswiki.org/emacs/CopyAndPaste][Copy and Paste]] : Although Emacs 29 has an option to build with pure GTK and therefore is supposed to support Wayland clipboard natively, that support does not work if emacs is run in a tty, or when run inside multiple displays. For that to work,
+the wl-clipboard program is needed (you need to install =wl-clipboard= first):
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+
+  ;; (use-package xclip
+  ;;       :ensure t
+  ;;       :config
+  ;;       (setq xclip-program "wl-copy")
+  ;;       (setq xclip-select-enable-clipboard t)
+  ;;       (setq xclip-mode t)
+  ;;       (setq xclip-method (quote wl-copy)))
+  (setq wl-copy-process nil)
+  (defun wl-copy (text)
+    (setq wl-copy-process (make-process :name "wl-copy"
+                                        :buffer nil
+                                        :command '("wl-copy" "-f" "-n")
+                                        :connection-type 'pipe
+                                        :noquery t))
+    (process-send-string wl-copy-process text)
+    (process-send-eof wl-copy-process))
+  (defun wl-paste ()
+    (if (and wl-copy-process (process-live-p wl-copy-process))
+        nil ; should return nil if we're the current paste owner
+        (shell-command-to-string "wl-paste -n | tr -d \r")))
+  (setq interprogram-cut-function 'wl-copy)
+  (setq interprogram-paste-function 'wl-paste)
 #+end_src
 * PDFs
 在系统中运行 *pacman -S --needed libpng zlib poppler-glib* 
