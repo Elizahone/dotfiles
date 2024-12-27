@@ -1,4 +1,5 @@
 return {
+    {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
@@ -15,4 +16,12 @@ return {
       desc = "Buffer Local Keymaps (which-key)",
     },
   },
+  },
+    {
+        'windwp/nvim-autopairs',
+        event = "InsertEnter",
+        config = true
+        -- use opts = {} for passing setup options
+        -- this is equivalent to setup({}) function
+    },
 }

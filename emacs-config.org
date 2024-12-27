@@ -276,7 +276,7 @@ Auto Save
 ** Themes
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 20))
-  ;; (set-fontset-font t 'unicode (font-spec :family "STKaiti" :size 26))
+  ;; (set-fontset-font t 'unicode (font-spec :family "KaiTi_GB2312" :size 20))
 
   ;; (add-to-list 'default-frame-alist '(alpha-background . 93)) ;
   (global-display-line-numbers-mode t)
@@ -527,6 +527,18 @@ org-modern 可以让orgmode的显示更加美观
   ;;  'org-babel-load-languages
   ;;  '((R . t)))
 #+END_SRC
+** org-latex-preview
+org-mode 可以像markdown一样内嵌latex代码，使用 =org-latex-preview= (C-c C-x C-l) 即可打开预览，默认生成图片格式，路径在当前目录，可以更改路径 （customize-group org-latex）
+需要依赖系统的Tex环境，安装TexLive dvipng 或 dvisvg
+
+_fragtog_ 可以如同org-appear一样
+
+#+begin_src emacs-lisp
+  (setq org-latex-preview-ltxpng-directory "/tmp/ltximg") ;; 生成图片的路径
+  (use-package fragtog
+    :ensure t)
+#+end_src
+
 * Meow
 ** 按键绑定
 
@@ -628,7 +640,7 @@ org-modern 可以让orgmode的显示更加美观
   (use-package meow
     :ensure t
     :init
-    (meow-global-mode 1)
+    ;; (meow-global-mode 1)
     (bind-key "C-;" 'meow-normal-mode)
     :config
     (setq meow-keypad-leader-dispatch "C-c") ;; 进入 keypad 后直接按 c x h m g 以外的键直接翻译成 C-a key ,实现 leader key 效果
@@ -783,6 +795,25 @@ the wl-clipboard program is needed (you need to install =wl-clipboard= first):
         (shell-command-to-string "wl-paste -n | tr -d \r")))
   (setq interprogram-cut-function 'wl-copy)
   (setq interprogram-paste-function 'wl-paste)
+#+end_src
+* Abbrevation
+
+=abbrev-mode= 是一个缩写的minor-mode，通过定义缩写， =C-x '= 
+
+#+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
+    (define-abbrev prog-mode-abbrev-table "cxx" "#include <bits/stdc++.h>
+  using namespace std;
+
+  void solve() {
+
+  }
+
+  int main() {
+      ios::sync_with_stdio(0);cin.tie(0), cout.tie(0);
+      solve();
+      return 0;
+  }
+  ")
 #+end_src
 * PDFs
 在系统中运行 *pacman -S --needed libpng zlib poppler-glib* 
