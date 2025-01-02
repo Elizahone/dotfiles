@@ -104,7 +104,7 @@
 #+BEGIN_SRC emacs-lisp :tangle ~/.emacs.d/init.el
   ;; 把 yes 和 no 变成 y 和 n
   (fset 'yes-or-no-p 'y-or-n-p)
-
+  (setq default-directory "~/Documents/")
   ;; 设置 tab 键
   (setq-default indent-tabs-mode nil
                 tab-width 4
@@ -276,36 +276,37 @@ Auto Save
 ** Themes
 #+begin_src emacs-lisp :tangle ~/.emacs.d/init.el
   (set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 20))
-  ;; (set-fontset-font t 'unicode (font-spec :family "KaiTi_GB2312" :size 20))
+  ;; 修改中文字体
+  (set-fontset-font t 'unicode (font-spec :family "KaiTi_GB2312" :size 22) nil 'prepend)
 
-  ;; (add-to-list 'default-frame-alist '(alpha-background . 93)) ;
-  (global-display-line-numbers-mode t)
-  (use-package doom-themes
-    :demand t
-    :ensure t
-    :config
-    (setq doom-themes-enable-bold t
-          doom-themes-enable-italic t)
-    :init (load-theme 'doom-palenight nil))
-  (use-package all-the-icons
-    :defer t
-    :ensure t
-    :if (display-graphic-p)) ;; 第一次运行时, M-x all-the-icon-install-fonts 安装字体.
+    ;; (add-to-list 'default-frame-alist '(alpha-background . 93)) ;
+    (global-display-line-numbers-mode t)
+    (use-package doom-themes
+      :demand t
+      :ensure t
+      :config
+      (setq doom-themes-enable-bold t
+            doom-themes-enable-italic t)
+      :init (load-theme 'doom-palenight nil))
+    (use-package all-the-icons
+      :defer t
+      :ensure t
+      :if (display-graphic-p)) ;; 第一次运行时, M-x all-the-icon-install-fonts 安装字体.
 
-  (use-package all-the-icons-nerd-fonts
-    :ensure t)
+    (use-package all-the-icons-nerd-fonts
+      :ensure t)
 
-  (use-package indent-bars
-    :ensure t
-  :custom
-  (indent-bars-no-descend-string t)
-  (indent-bars-treesit-ignore-blank-lines-types '("module"))
-  (indent-bars-prefer-character t)
-  (indent-bars-treesit-scope '((python function_definition class_definition for_statement
-                                       if_statement with_statement while_statement)))
-  :hook ((prog-mode yaml-mode) . indent-bars-mode)
-  :config (require 'indent-bars-ts))
-  ;; :init (load-theme 'doom-opera-light t))
+    (use-package indent-bars
+      :ensure t
+    :custom
+    (indent-bars-no-descend-string t)
+    (indent-bars-treesit-ignore-blank-lines-types '("module"))
+    (indent-bars-prefer-character t)
+    (indent-bars-treesit-scope '((python function_definition class_definition for_statement
+                                         if_statement with_statement while_statement)))
+    :hook ((prog-mode yaml-mode) . indent-bars-mode)
+    :config (require 'indent-bars-ts))
+    ;; :init (load-theme 'doom-opera-light t))
 #+end_src
 
 ** doomline
@@ -829,4 +830,17 @@ the wl-clipboard program is needed (you need to install =wl-clipboard= first):
     :init (pdf-tools-install))
   (add-hook 'pdf-view-mode-hook #'(lambda () (interactive) (display-line-numbers-mode -1)))
 #+end_src
+
+
+
+(defun insert-chars-around-string (input-str)
+  (interactive "sEnter string: ")
+  (let ((first-char (elt input-str 0))
+        (second-char (elt input-str 1)))
+    (if (< (length input-str) 2)
+        (message "The string must contain at least two characters."))
+    (goto-char (region-beginning))
+    (insert first-char)
+    (goto-char (region-end))
+    (insert second-char)))
 
