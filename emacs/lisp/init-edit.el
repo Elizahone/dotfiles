@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t no-byte-compile: t -*-
+
 (delete-selection-mode t)
 
 ;; --------------------------------------------------------------------------------

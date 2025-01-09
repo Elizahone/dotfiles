@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t no-byte-compile: t -*-
+
  (defun meow-setup ()
   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
   (meow-motion-overwrite-define-key

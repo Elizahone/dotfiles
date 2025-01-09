@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t no-byte-compile: t -*-
+
 (load-theme 'wombat)
 ;; --------------------------------------------------------------------------------
 ;; fonts
@@ -12,30 +14,29 @@
 ;; --------------------------------------------------------------------------------
 ;; theme
 ;; --------------------------------------------------------------------------------
-;; (use-package doom-themes
-;;   :config
-;;   (setq doom-themes-enable-bold t
-;;         doom-themes-enable-italic t)
-;;   :init (load-theme 'doom-palenight t))
-;; (use-package all-the-icons
-;;   :if (display-graphic-p)) ;; 第一次运行时, M-x all-the-icon-install-fonts 安装字体.
+(use-package ef-themes
+  :init (load-theme 'ef-elea-dark :no-confirm)
+  :config
+  (setq ef-themes-to-toggle '(ef-elea-dark ef-spring)))
+(use-package all-the-icons
+  :if (display-graphic-p)) ;; 第一次运行时, M-x all-the-icon-install-fonts 安装字体.
 
-;; (use-package all-the-icons-nerd-fonts)
+(use-package all-the-icons-nerd-fonts)
 
 ;; --------------------------------------------------------------------------------
 ;; indent-bar
 ;; --------------------------------------------------------------------------------
 
 
-;; (use-package indent-bars
-;;   :custom
-;;   (indent-bars-no-descend-string t)
-;;   (indent-bars-treesit-ignore-blank-lines-types '("module"))
-;;   (indent-bars-prefer-character t)
-;;   (indent-bars-treesit-scope '((python function_definition class_definition for_statement
-;;                                        if_statement with_statement while_statement)))
-;;   :hook ((prog-mode yaml-mode) . indent-bars-mode)
-;;   :config (require 'indent-bars-ts))
+(use-package indent-bars
+  :custom
+  (indent-bars-no-descend-string t)
+  (indent-bars-treesit-ignore-blank-lines-types '("module"))
+  (indent-bars-prefer-character t)
+  (indent-bars-treesit-scope '((python function_definition class_definition for_statement
+                                       if_statement with_statement while_statement)))
+  :hook ((prog-mode yaml-mode) . indent-bars-mode)
+  :config (require 'indent-bars-ts))
 
 ;; --------------------------------------------------------------------------------
 ;; doom-modeline

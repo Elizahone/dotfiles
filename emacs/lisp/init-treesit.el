@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t no-byte-compile: t -*-
+
 (use-package treesit
   :ensure nil
   :config

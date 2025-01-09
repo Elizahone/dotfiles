@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t no-byte-compile: t -*-
+
 (fset 'yes-or-no-p 'y-or-n-p)
 ;; 关闭自动保存 #
 (setq auto-save-default nil)
@@ -88,5 +90,15 @@
       (shell-command-to-string "wl-paste -n | tr -d \r")))
   (setq interprogram-cut-function 'wl-copy)
   (setq interprogram-paste-function 'wl-paste))
+
+
+;; --------------------------------------------------------------------------------
+;; open config files quickly
+;; --------------------------------------------------------------------------------
+
+(defun elzh/open-config-directory ()
+  (interactive)
+  (let ((default-directory "~/.emacs.d/lisp/"))
+    (call-interactively #'find-file)))
 
 (provide 'init-base)

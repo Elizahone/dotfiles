@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t no-byte-compile: t -*-
+
 ;; --------------------------------------------------------------------------------
 ;; Speed up startup.
 ;;---------------------------------------------------------------------------------
@@ -11,18 +13,18 @@
 ;; Don't pass case-insensitive to `auto-mode-alist'
 (setq auto-mode-case-fold nil)
 
-;; (unless (or (daemonp) noninteractive init-file-debug)
-;;   ;; Suppress file handlers operations at startup
-;;   ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
-;;   (let ((old-value file-name-handler-alist))
-;;     (setq file-name-handler-alist nil)
-;;     (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
-;;     (add-hook 'emacs-startup-hook
-;;               (lambda ()
-;;                 "Recover file name handlers."
-;;                 (setq file-name-handler-alist
-;;                       (delete-dups (append file-name-handler-alist old-value))))
-;;               101)))
+(unless (or (daemonp) noninteractive init-file-debug)
+  ;; Suppress file handlers operations at startup
+  ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
+  (let ((old-value file-name-handler-alist))
+    (setq file-name-handler-alist nil)
+    (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                "Recover file name handlers."
+                (setq file-name-handler-alist
+                      (delete-dups (append file-name-handler-alist old-value))))
+              101)))
 ;; --------------------------------------------------------------------------------
 ;; load custom file in external file.
 ;; --------------------------------------------------------------------------------
@@ -52,6 +54,7 @@ Otherwise the startup will be very slow."
 (advice-add #'package-initialize :after #'update-load-path)
 ;; (advice-add #'package-initialize :after #'add-subdirs-to-load-path)
 (update-load-path)
+
 
 
 (require 'init-package)

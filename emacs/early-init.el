@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t no-byte-compile: t -*-
+
 ;; -*- lexical-binding: t -*-
  (setq gc-cons-threshold most-positive-fixnum)
  (setq gc-cons-percentage 0.6)
