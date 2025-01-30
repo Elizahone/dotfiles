@@ -1,5 +1,13 @@
 ;; -*- lexical-binding: t no-byte-compile: t -*-
 
+(electric-pair-mode 1)
+(setq electric-pair-pairs '(
+                            (?\" . ?\")
+                            (?\' . ?\')
+                            (?\{ . ?\})
+                            (?\[ . ?\])
+                            (?\( . ?\))))
+
 ;; --------------------------------------------------------------------------------
 ;; orderless
 ;; --------------------------------------------------------------------------------
@@ -283,6 +291,18 @@
 (unless (display-graphic-p)
   (use-package corfu-terminal
     :hook (global-corfu-mode . corfu-terminal-mode)))
+
+
+;; Add extensions
+(use-package cape
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+
+  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
 
 ;; --------------------------------------------------------------------------------
 ;; which-key

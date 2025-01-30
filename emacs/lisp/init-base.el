@@ -6,7 +6,7 @@
 ;; 关闭备份 ~
 (setq  make-backup-files nil)
 ;; 换行的自动缩进
-(setq electric-indent-mode nil)
+;; (setq electric-indent-mode nil)
 
 ;; --------------------------------------------------------------------------------
 ;;
@@ -26,8 +26,7 @@
 (use-package simple
   :ensure nil
   :hook ((after-init . size-indication-mode)
-         (text-mode . visual-line-mode)
-         ((prog-mode markdown-mode conf-mode) . enable-trailing-whitespace))
+         (text-mode . visual-line-mode))
   :init
   (setq column-number-mode t
         line-number-mode t

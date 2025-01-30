@@ -1,15 +1,15 @@
 ;; -*- lexical-binding: t no-byte-compile: t -*-
 
-(load-theme 'wombat)
+
 ;; --------------------------------------------------------------------------------
 ;; fonts
 ;; --------------------------------------------------------------------------------
 
 (global-display-line-numbers-mode 1)
 
-(set-face-attribute 'default nil :font (font-spec :family "Source Code Pro"))
+(set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 20))
   ;; 修改中文字体  设置 :size 值就无法调整大小
-(set-fontset-font "fontset-default" 'unicode (font-spec :family "KaiTi_GB2312") nil 'prepend)
+(set-fontset-font "fontset-default" 'unicode (font-spec :family "KaiTi_GB2312" :size 20) nil 'prepend)
 
 ;; --------------------------------------------------------------------------------
 ;; theme
@@ -34,9 +34,10 @@
   (indent-bars-treesit-ignore-blank-lines-types '("module"))
   (indent-bars-prefer-character t)
   (indent-bars-treesit-scope '((python function_definition class_definition for_statement
-                                       if_statement with_statement while_statement)))
+				       if_statement with_statement while_statement)))
   :hook ((prog-mode yaml-mode) . indent-bars-mode)
   :config (require 'indent-bars-ts))
+
 
 ;; --------------------------------------------------------------------------------
 ;; doom-modeline

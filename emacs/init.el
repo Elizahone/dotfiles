@@ -72,3 +72,5 @@ Otherwise the startup will be very slow."
 (require 'init-edit)
 
 (require 'init-window)
+
+(require 'init-rime)

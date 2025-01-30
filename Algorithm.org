@@ -696,6 +696,25 @@ public:
 *** 2. K 秒后第 N 个元素的值 [[https://leetcode.cn/problems/find-the-n-th-value-after-k-seconds/description/][]]
 *** 3. 执行操作可获得的最大总奖励 I [[https://leetcode.cn/problems/maximum-total-reward-using-operations-i/description/][]]
 *** 4. 执行操作可获得的最大总奖励 II [[https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/description/][]]
+** TODO 第 432 场周赛
+[] 2. 机器人可以获得的最大金币数
+** DONE 第 433 场周赛 <2025-01-19 Sun>
+[[https://leetcode.cn/contest/weekly-contest-433/]]
+1. =最多 K 个元素的子序列的最值之和=
+   由于枚举每个子序列特别麻烦，考虑到每个子序列的最大值最小值仅与最值有关，其余的数据对最后的答案无 =贡献= ，因此枚举最值在序列的出现的次数，即对答案的贡献（贡献法）。
+   =具体做法：= 首先将数据排序，枚举最小（大）值，那么该子序列其他的成员则在前（后）面取得，因此在前面的所有元素中选取 0 1 2 ... 个元素的方案数即可得到该值的贡献。
+2. =粉刷房子 IV=
+   对于该题，每次概率对称的连个位置进行枚举可能性，对于第i个房子，需保证和第n-i个房子颜色不同即可，定义dp[i][j]为第i个房子颜色不能选j颜色。
+3. =最多 K 个元素的子数组的最值之和=
+   
+   该题基础版本为 [[https://leetcode.cn/problems/sum-of-subarray-minimums/description/][最多 K 个元素的子数组的最值之和]]
+   思路同第 =最多 K 个元素的子序列的最值之和= ，同样考虑 =贡献法= ，不同于子序列，子数组需保证顺序，因此每次枚举最小（大）值，因维护该值左边和（右边）小（大）于等于该值最近的下标，使用 =单调栈= 维护。维护左侧 =小于= 该值的最近的下标，右侧 =小于等于= 该值的最近的下标（防止重复计数）。计算最大值时可将所有数取负，可复用同一套逻辑。
+   
+** ABC-388
+*** TODO [[https://atcoder.jp/contests/abc388/tasks/abc388_f][F
+[[https://www.bilibili.com/video/BV1VYcVeQEUH?spm_id_from=333.788.recommend_more_video.-1&vd_source=3e78417e114be9d4af93565f11845737][Bilibili]] : 
+*** TODO [[https://atcoder.jp/contests/abc388/tasks/abc388_g][G]]
+
 * Algorithm Learning
 ** 单调栈
 
@@ -1220,7 +1239,7 @@ dfs 解法 （最优）
               if (x < 0) {
                   return ranges::max(dis);
               }
-              // 如果 x 为 ，意味着有节点不可答
+              // 如果 x 为 ，意味着有节点不可达
               if (dis[x] == INT_MAX / 2) {
                   return -1;
               }
@@ -1284,6 +1303,8 @@ dfs 解法 （最优）
 
 **** 分组背包
 所有商品经过分组，每个分组最多选择一个。 只需要对每个分组进行展开，对于每个分组依然是0-1背包。
+典型例题： [[https://leetcode.cn/problems/maximum-value-of-k-coins-from-piles][从栈中取出 K 个硬币的最大面值和]]
+
 
 **** 完全背包
 和 0-1 背包的区别就是每个商品都可以无限选择，因此，当在 0-i 范围内选择时，假如第 i 件商品不选择（选择），那么子问题依然是 0-i 的范围内选择。

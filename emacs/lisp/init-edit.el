@@ -29,6 +29,9 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
-
+(use-package c++-ts-mode
+  :ensure nil
+  :config
+  (setq c-ts-mode-indent-offset 4))
 
 (provide 'init-edit)
