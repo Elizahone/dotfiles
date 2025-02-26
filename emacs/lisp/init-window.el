@@ -9,7 +9,7 @@
    :defines popper-echo-dispatch-actions
    :commands popper-group-by-directory
    :bind (:map popper-mode-map
-               ("s-`" . popper-toggle-latest)
+               ("C-`" . popper-toggle)
                ("s-o"   . popper-cycle)
                ("M-`" . popper-toggle-type))
    :hook (emacs-startup . popper-mode)
@@ -109,7 +109,8 @@
      (advice-add #'keyboard-quit :before #'popper-close-window-hack)))
 
 
-
+(use-package ace-window
+  :bind ("M-o" . ace-window))
 
 
 (provide 'init-window)

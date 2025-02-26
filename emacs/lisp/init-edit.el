@@ -1,7 +1,10 @@
 ;; -*- lexical-binding: t no-byte-compile: t -*-
 
 (delete-selection-mode t)
-
+(setq tab-always-indent nil)
+;; when type RETURN, it would't indent automately.
+;; (keymap-global-set "RET" #'newline-and-indent)
+(keymap-global-unset "C-j")
 ;; --------------------------------------------------------------------------------
 ;; expand-region
 ;; --------------------------------------------------------------------------------
@@ -28,6 +31,10 @@
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package avy
+  :bind (("C-;" . avy-goto-char)
+	 ("M-g g" . avy-goto-line)))
 
 (use-package c++-ts-mode
   :ensure nil

@@ -74,3 +74,5 @@ Otherwise the startup will be very slow."
 (require 'init-window)
 
 (require 'init-rime)
+
+(require 'init-vterm)

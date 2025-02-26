@@ -264,7 +264,9 @@
         (apply fn args)))
 
     (advice-add #'embark-completing-read-prompter
-                :around #'embark-hide-which-key-indicator)))
+                :around #'embark-hide-which-key-indicator))
+  ;; add new action (find-file-other-tab) for file target.
+  (keymap-set embark-file-map "t" #'find-file-other-tab))
 
 (use-package embark-consult
   :bind (:map minibuffer-mode-map
@@ -320,6 +322,7 @@
 (use-package yasnippet
   :config
   (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+  (yas-reload-all)
   :hook (prog-mode . yas-minor-mode))
 
 
