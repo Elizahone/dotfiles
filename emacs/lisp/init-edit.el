@@ -5,6 +5,7 @@
 ;; when type RETURN, it would't indent automately.
 ;; (keymap-global-set "RET" #'newline-and-indent)
 (keymap-global-unset "C-j")
+
 ;; --------------------------------------------------------------------------------
 ;; expand-region
 ;; --------------------------------------------------------------------------------

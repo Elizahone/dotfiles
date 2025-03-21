@@ -1109,7 +1109,6 @@ dfs 解法 （最优）
       }
   };
 #+end_src
-
 ** 图
 
 *** 建图
@@ -1316,3 +1315,239 @@ dfs 解法 （最优）
   + 优化：
 **** 混合背包
 *** 树形 DP
+** 逆元: 相当于倒数的意思，可保证 a / b % mod 最后的值仍然正确
+=逆元详解：= https://www.luogu.com.cn/problem/solution/P3811
+
+p的逆元等于 =inv == p ^ (mod-2) % mod= 最后 *a / b % mod = ((a % mod) * inv) % mod* , *inv* 的计算可用快速幂计算。
+需满足如下条件：
+1. a / b 能除尽 （a 能被 b 整除）
+2. mod 为质数
+
+逆元的线性递推公式： =inv[i] = (int) (mod - (long long)inv[mod % i] * (mod / i) % mod)=
+** KMP
+最长真前后缀：aaaaa，前缀是 0 1 2 3 ，后缀是 4 3 2 1，不包含整体。
+*next[]* 的定义：不含当前，前面字符串钱后缀最大匹配长度（不能是前面的整体）。因此next[0]=-1, next[1]=0是确定的。
+
+如何快速得到 =next= 数组，假设来到了第 i 个字符，设 =len = next[i-1]= ，如果 s[len] == s[i-1]，那么 next[i] 就等于 len+1，如果不等于那么就跳到 len 位置继续上述操作。
+#+begin_src c++
+  vector<int> getNext(string& s) {
+    int n = s.size();
+    if (n == 1) return {-1};
+    vector<int> next(n+1);
+    next[0] = -1, next[1] = 0;
+    int len = next[1]; 
+    for (int i = 2; i <= n; i++) {
+      while (len >= 0 && s[i-1] != s[len]) {
+        len = next[len];
+      }
+      next[i] = ++len;
+    }
+    return next;
+  }
+
+  int KMP(string& s1, string& s2) {
+    vector<int> next = getNext(s2);
+    int n = s1.size(), m = s2.size(), x = 0, y = 0;
+
+    while (x < n && y < m) {
+      if (s1[x] == s2[y]) {
+        x++, y++;
+      } else if (y == 0) {
+        x++;
+      } else {
+        y = next[y];
+      }
+    }
+    return y == m ? (x - m) : -1;
+  }
+
+#+end_src
+** 字符串哈希
+通过自定义字符串哈希函数为每个字符串生成特定的哈希值，可以不逐位比较。同时，通过特定的预处理结构可以快速得到字串的哈希值，从而替代 KMP 算法，但是时间复杂度没有 KMP 好，但是理解难度低。
+*字符串哈希函数：* 任意选择一个质数作为基数，就如同二进制一样。让最后的值自然溢出（mod 2^64），最后的哈希值理论上存在哈希冲突，但是概率极小，就算真冲突了，也可以通过更换基数解决。
+
+#+begin_src c++
+  const int base = 499;
+
+
+  int v(char c) {
+    if (c >= '0' && c <= '9') {
+      return c - '0' + 1;
+    } else if (c >= 'A' && c <= 'Z') {
+      return c - 'A' + 11;
+    } else {
+      return c - 'a' + 37;
+    }
+  }
+
+
+  long long strHash(string& s) {
+    long long value = v(s[0]);
+    for (int i = 1; i < s.size(); i++) {
+      value = value * base + v(s[i]);
+    }
+    return value;
+  }
+#+end_src
+
+=获得某个字串的hash值，维护一个hash前缀，每次都过O（1）时间获得= 次方法降低了字串比较的代价，可以替代KMP和Manacher
+
+#+begin_src c++
+  const int MAXN = 1e5 + 7;
+  const int BASE = 499;
+  long long pow[MAXN]; // base ^ i
+  long long hash[MAXN];
+
+  void init(string& s) {
+    int n = s.size();
+    pow[0] = 1;
+    for (int i = 1; i < MAXN; i++) {
+      pow[i] = pow[i-1] * BASE;
+    }
+    // hash list
+    hash[0] = s[0] - 'a' + 1;
+    for (int i = 1; i < n; i++) {
+      hash[i] = hash[i-1] * base + s[i] - 'a' + 1;
+    }
+    // if you wanna get [l, r]'s hashvalue, just return hash[r] - hash[l-1] * base^(r - l + 1)
+  }
+
+  long long getHash(int l, int r) {
+    long long ans = hash[r];
+    if (l > 0) {
+      ans -= hash[l-1] * pow[r - l + 1];
+    }
+    return ans;
+  }
+
+#+end_src
+** AC 自动机
+
+[[https://www.bilibili.com/video/BV1Sy421a78C/?spm_id_from=333.1387.collection.video_card.click&vd_source=3e78417e114be9d4af93565f11845737][讲解视频-左程云]]
+https://www.luogu.com.cn/problem/P5357
+
+每个可能性都没丧失，只不过每个节点只保存了最长前后缀匹配的最大长度（即 =fail= 指针的指向，通过在fail的跳转实现对所有可能性的查找，类似与kmp中 =len = next[len];= 语句，不断跳转）
+fail指针设定规则：（由起始节点（父节点）设定终止节点（子节点）的fail指针）如果边为 a 的起始节点的fail指针所指向的节点（假设为2号节点）a边，那么 该起始节点 a边的终止节点的fail指针就指向2号节点，倘若2号节点不存在a边，则继续跳转至2号节点的fail指针指向的节点，
+重复上述操作，直到设定成功或者到 0节点。意思为： *如果匹配失败，那么其他目标字符的前缀和当前所匹配的字符串的真后缀最长相同值一定是fail指针所指向的节点* 
+
+=fail指针绕圈现象= ：只fail指针在构建、匹配失败、词频传递时都需要顺着fail指针链走很长距离。时间复杂度很大
+   + 优化一；建立AC自动机时和匹配失败时防止绕圈
+     绕圈原因：每次都需要顺着fail指针走，对于Tire所形成的表中，可将值为0（没有这条路）的数据直接设定为最终的目的地。具体方法为：当父节点设定子节点时，对于每条路，如果没有路（值为0），则将该值设为父节点fail指针指向的节点的该路的值。
+     就如果 =优化KMP的nextval数组= ，这样就可以直接到达目标节点，不需要依次寻路。
+   + 优化二：遍历主串时不知道命中了哪些目标串，需要fail指针绕圈进行词频传递
+     在传递词频时，每次都将fail指针的指向节点词频加一，fail指针所指向的节点一定在该节点的上层，该过程像子树像父节点传递  。在遍历时不绕圈，在遍历完之后，通过把fail指针看作边的指向进行建树，该节点的最终词频就为该点的词频加上子树的词频。
+   + 优化三：当问题不允许离线处理（优化二）时，比如当存在某个目标字符时就报警，然后停止。在匹配过程中，为了确定到底要不要报警时需要fail指针绕圈。为避免绕圈，可以设置一个 =alter[]= 表，alter[u] |= alter[fail[u]]，最初的alter在建立前缀树时设定。 [[https://www.luogu.com.cn/problem/P3311]]
+
+** Manacher
+Manacher 算法最经典的用法是用以求最长回文子序列问题。对于该问题，最朴素的算法是每到一个位置（假设为回文中心）就往两边扩展，但是会丢失偶数长度的回文串，为此可以将每个字符两边添加一个任意字符（‘#’），这样再进行上述操作就不会丢失可能性。
+Manacher算法通过利用隐含的信息建立 =回文半径数组= 将时间复杂度优化到 O(n) 。
++ *回文半径：* 当前字符向某一方向最远可扩的距离。无法扩展为 1。
++ *回文覆盖最右边界（r）：* 以往字符的回文半径所不能达到的最近的字符下标（最远可达字符加一），例如： =abac= ，r=3（c）
++ *回文中心（c）：* 最先扩展回文覆盖最右边界的字符下标
+
+Manacher算法共有一下四种可能情况：
+1. i（当前字符下标）没有被 r 包住，此时不能加速，以 i 为中心直接扩展
+2. i 被 r 包住， 对称点 =2*c-i= 的回文半径在大回文区域（以c为中心，r为半径）内，直接确定 =p[i] = p[2*c-i]=
+3. i 被 r 包住， 对称点 =2*c-i= 的回文半径不在在大回文区域内，直接确定 =p[i] = r-i=
+4. i 被 r 包住， 对称点 =2*c-i= 的回文半径撞线大回文区域边界，从 r 位置直接开始扩展
+
+#+begin_src C++
+  #include <bits/stdc++.h>
+  const int MAXS = 11000007;
+  int n;
+  char ss[MAXS << 1];
+  int p[MAXS << 1];
+
+  void manacherss(std::string& s) {
+    for (int i = 0, j = 0; i < 2*n+1; i++) {
+      ss[i] = i & 1 ? s[j++] : '#';
+    }
+  }
+
+  int manacher() {
+    int mx = 0;
+    for (int i = 0, r = 0, c = 0, len; i < 2*n+1; i++) {
+      len = r > i ? std::min(p[2*c - i], r - i) : 1;
+      while (i + len < 2*n + 1 && i - len >= 0 && ss[i-len] == ss[i+len]) {
+        len++;
+      }
+      if (i + len > r) {
+        r = i + len;
+        c = i;
+      }
+      mx = std::max(mx, len);
+      p[i] = len;
+    }
+    return mx - 1;
+  }
+
+  int main() {
+    std::string s;
+    std::cin >> s;
+    n = s.size();
+    manacherss(s);
+    std::cout << manacher() << "\n";
+
+  }
+
+#+end_src
+
+https://leetcode.cn/problems/maximum-number-of-non-overlapping-palindrome-substrings/description/
+
+** Z 函数（扩展KMP）
+求解一个字符串从某一下标开始的字串和该字符串整体的最大前缀匹配长度（Z数组），下面四种情况和Manacher算法有着惊人的相似。
++ *最右匹配右边界（r）：* 从某一下标出发扩展出的最近不合规的下标，（对比 =回文覆盖右边界= ）
++ *匹配中心（c）：* 叫匹配起点更合适一点。含义是最先抵达 *最右匹配右边界* 的下标。
+
+四种情况：
+1. i（当前字符下标）没有被 r 包住，此时不能加速，以 i 为起点直接扩展
+2. i 被 r 包住， 关键点 =i-c= 的 =i+z[i-c]= 小于 =r= ，直接确定 =z[i] = z[c-i]=
+3. i 被 r 包住， 关键点 =i-c= 的 =i+z[i-c]= 大于 =r= ，直接确定 =z[i] = r-i=
+4. i 被 r 包住， 关键点 =i-c= 的 =i+z[i-c]= 等于 =r= ，从 r 位置直接开始扩展
+
+   #+begin_src C++
+     vector<int> zArray(string& s) {
+       int n = s.size();
+       z[0] = n;
+       for (int i = 1, r = 1, c = 1, len; i < n; i++) {
+         len = r > i ? min(z[i-c], r - i) : 0;
+         while (i + len < n && s[i+len] == s[len]) {
+           len++;
+         }
+         if (i + len > r) {
+           r = i + len;
+           c = i;
+         }
+         z[i] = len;
+       }
+       return z;
+     }
+
+   #+end_src
+
+E数组。两个字符串 A B，E[i]为 A 从下标i开始的子串和 B 整体的最长匹配长度。需要借助B的Z数组。
+同样有四种情况，r和c的定义同上：
+1. i（当前字符下标）没有被 r 包住，此时不能加速，以 i 为起点直接扩展
+2. i 被 r 包住， 关键点 =i-c= 的 =i+z[i-c]= 小于 =r= ，直接确定 =e[i] = z[c-i]=
+3. i 被 r 包住， 关键点 =i-c= 的 =i+z[i-c]= 大于 =r= ，直接确定 =e[i] = r-i=
+4. i 被 r 包住， 关键点 =i-c= 的 =i+z[i-c]= 等于 =r= ，从 r 位置直接开始扩展
+
+      #+begin_src C++
+        vector<int> eArray(string& a, string& b, vector<int>& z) {
+          int n = a.size();
+          vector<int> e(n);
+          for (int i = 0, r = 0, c = 0, len; i < n; i++) {
+            len = r > i ? min(z[i-c], r - i) : 0;
+            while (i + len < n && a[i+len] == b[len]) {
+              len++;
+            }
+            if (i + len > r) {
+              r = i + len;
+              c = i;
+            }
+            e[i] = len;
+          }
+          return e;
+        }
+
+   #+end_src

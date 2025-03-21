@@ -17,10 +17,11 @@
   "buffer_font_size": 18,
   "theme": {
     "mode": "system",
-    "light": "Ayu Dark",
+    "light": "Rosé Pine",
     "dark": "One Dark"
   },
   "autosave": "off",
   "autoupdate": "off",
-  "vim_mode": true
+  "base_keymap": "Emacs",
+  "cursor_shape": "block"
 }

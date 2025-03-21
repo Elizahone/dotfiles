@@ -76,7 +76,7 @@
             "icon-size": 21,
             "spacing": 10
     },
-     "pulseaudio": {
+    "pulseaudio": {
     		"format": "{volume}% {icon}",
     		"format-bluetooth": "{volume}% {icon}",
     		"format-muted": "",
@@ -92,11 +92,30 @@
         		"car": "",
         		"default": ["", ""]
     		},
-    		"scroll-step": 3,
+    		"scroll-step": 1,
     		"on-click": "pavucontrol",
     		"ignored-sinks": ["Easy Effects Sink"]
 	},
-     "memory": {
+     
+    "pulseaudio/slider": {
+        "min": 5,
+        "max": 100,
+        "rotate": 0,
+        "device": "pulseaudio",
+        "scroll-step": 1
+    },
+    "group/sounds": {
+        "orientation": "horizontal",
+        "drawer": {
+            "transition-duration": 600,
+            "children-class": "not-power",
+            "transition-to-left": true,
+            "click-to-reveal": true
+        },
+        "modules": ["pulseaudio","pulseaudio/slider"]
+    },
+
+    "memory": {
         	"interval": 5,
         	"format": "󰍛  Mem: {}%",
         	"max-length": 15
