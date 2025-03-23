@@ -2,6 +2,7 @@
 
 (delete-selection-mode t)
 (setq tab-always-indent nil)
+(setq-default indent-tabs-mode nil)
 ;; when type RETURN, it would't indent automately.
 ;; (keymap-global-set "RET" #'newline-and-indent)
 (keymap-global-unset "C-j")

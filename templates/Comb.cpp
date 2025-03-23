@@ -3,7 +3,7 @@ using namespace std;
 const int MOD = 1'000'000'007;
 const int MX = 100'001; // 根据题目数据范围修改
 
-long long F[MX]; // F[i] = i!
+long long F[MX];     // F[i] = i!
 long long INV_F[MX]; // INV_F[i] = i!^-1
 
 long long pow(long long x, int n) {
@@ -16,7 +16,6 @@ long long pow(long long x, int n) {
     }
     return res;
 }
-
 
 auto init = [] {
     F[0] = 1;
@@ -31,14 +30,10 @@ auto init = [] {
     return 0;
 }();
 
-
-
 // 从 n 个数中选 m 个数的方案数
 
 long long comb(int n, int m) {
     return m < 0 || m > n ? 0 : F[n] * INV_F[m] % MOD * INV_F[n - m] % MOD;
 }
 
-int main() {
-    cout << comb(3, 2) << endl;
-}
+int main() { cout << comb(3, 2) << endl; }
