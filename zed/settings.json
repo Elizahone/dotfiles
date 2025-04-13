@@ -14,10 +14,10 @@
   "ui_font_family": "Cantarell",
   "buffer_font_family": "Source Code Pro",
   "ui_font_size": 20,
-  "buffer_font_size": 18,
+  "buffer_font_size": 19.0,
   "theme": {
     "mode": "system",
-    "light": "Rosé Pine",
+    "light": "Summercamp",
     "dark": "One Dark"
   },
   "autosave": "off",

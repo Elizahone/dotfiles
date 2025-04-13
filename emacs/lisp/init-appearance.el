@@ -9,7 +9,7 @@
 
 (set-face-attribute 'default nil :font (font-spec :family "Source Code Pro" :size 20))
   ;; 修改中文字体  设置 :size 值就无法调整大小
-(set-fontset-font "fontset-default" 'unicode (font-spec :family "KaiTi_GB2312" :size 20) nil 'prepend)
+(set-fontset-font "fontset-default" 'unicode (font-spec :family "LXGW WenKai Mono GB Screen") nil 'prepend)
 
 ;; --------------------------------------------------------------------------------
 ;; theme

@@ -35,8 +35,7 @@ int euler(int n) {
                 break;
             }
             visit[i * prime[j]] = true;
-            if (i % prime[j] ==
-                0) { // 此后的数的最小质因数一定是 prime[j], 不能由 prime[j+1] 标记
+            if (i % prime[j] ==0) { // 此后的数的最小质因数一定是 prime[j], 不能由 prime[j+1] 标记
                 break;
             }
         }
@@ -64,10 +63,60 @@ int ehrlich2(int n) {
     return cnt;
 }
 
+// 求解质因数的个数
+vector<int> countPrimeFactors(int n) {
+    vector<int> is_prime(n + 1, 1);
+    vector<int> primes;
+    vector<int> factor_count(n + 1, 0);  // 存储每个数的质因数个数
+    
+    is_prime[0] = is_prime[1] = 0;
+    
+    for (int i = 2; i <= n; ++i) {
+        if (is_prime[i]) {
+            primes.push_back(i);
+            factor_count[i] = 1;  // 素数的质因数个数为1
+        }
+        
+        for (int j = 0; j < primes.size() && i * primes[j] <= n; ++j) {
+            is_prime[i * primes[j]] = 0;
+            
+            if (i % primes[j] == 0) {
+                factor_count[i * primes[j]] = factor_count[i];  // 不增加质因数个数
+                break;
+            } 
+            factor_count[i * primes[j]] = factor_count[i] + 1;  // 增加一个新的质因数
+        }
+    }
+    
+    return factor_count;
+}
+
+int f(int n) {
+    int ans = 0;
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0) {
+            ans++;
+            while (n % i == 0) {
+                n /= i;
+            }
+        }
+    }
+    if (n > 1) {
+        ans++;
+    }
+    return ans;
+}
+
 int main() {
-    int n = 1000;
-    cout << ehrlich(n) << endl;
-    cout << euler(n) << endl;
-    cout << ehrlich2(n) << endl;
+    int n = 1e7;
+    auto factor_count = countPrimeFactors(n);
+    
+    for (int i = 1; i <= n; ++i) {
+        if (f(i) != factor_count[i]) {
+            cout << "Error" << endl;
+        }
+    }
+    cout << "AC" << endl;
+    
     return 0;
 }

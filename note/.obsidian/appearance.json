@@ -1,5 +1,9 @@
 {
-  "theme": "obsidian",
+  "theme": "moonstone",
   "baseFontSizeAction": false,
-  "nativeMenus": false
+  "nativeMenus": false,
+  "textFontFamily": "LXGW WenKai Mono GB Screen",
+  "interfaceFontFamily": "LXGW WenKai Mono GB Screen",
+  "cssTheme": "Border",
+  "accentColor": "#37d5d7"
 }
