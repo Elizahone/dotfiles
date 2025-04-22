@@ -89,6 +89,16 @@
         "type": "tabs",
         "children": [
           {
+            "id": "6bbe7a4d23538bf5",
+            "type": "leaf",
+            "state": {
+              "type": "quiet-outline",
+              "state": {},
+              "icon": "lines-of-text",
+              "title": "Quiet Outline"
+            }
+          },
+          {
             "id": "9839440dbdd1f583",
             "type": "leaf",
             "state": {
@@ -135,24 +145,8 @@
               "icon": "lucide-tags",
               "title": "标签"
             }
-          },
-          {
-            "id": "c85a626875c7011b",
-            "type": "leaf",
-            "state": {
-              "type": "outline",
-              "state": {
-                "file": "GoodQ.md",
-                "followCursor": false,
-                "showSearch": false,
-                "searchQuery": ""
-              },
-              "icon": "lucide-list",
-              "title": "GoodQ 的大纲"
-            }
           }
-        ],
-        "currentTab": 3
+        ]
       }
     ],
     "direction": "horizontal",
@@ -171,8 +165,9 @@
   },
   "active": "615fdc3f697ff298",
   "lastOpenFiles": [
-    "未命名 1.md",
+    "al.md",
     "GoodQ.md",
+    "未命名 1.md",
     "未命名.md"
   ]
 }
