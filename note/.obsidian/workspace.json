@@ -15,7 +15,8 @@
               "state": {
                 "file": "GoodQ.md",
                 "mode": "source",
-                "source": false
+                "source": false,
+                "backlinks": false
               },
               "icon": "lucide-file",
               "title": "GoodQ"
@@ -96,39 +97,6 @@
               "state": {},
               "icon": "lines-of-text",
               "title": "Quiet Outline"
-            }
-          },
-          {
-            "id": "9839440dbdd1f583",
-            "type": "leaf",
-            "state": {
-              "type": "backlink",
-              "state": {
-                "file": "GoodQ.md",
-                "collapseAll": false,
-                "extraContext": false,
-                "sortOrder": "alphabetical",
-                "showSearch": false,
-                "searchQuery": "",
-                "backlinkCollapsed": false,
-                "unlinkedCollapsed": true
-              },
-              "icon": "links-coming-in",
-              "title": "GoodQ 的反向链接列表"
-            }
-          },
-          {
-            "id": "72f568608562f1de",
-            "type": "leaf",
-            "state": {
-              "type": "outgoing-link",
-              "state": {
-                "file": "GoodQ.md",
-                "linksCollapsed": false,
-                "unlinkedCollapsed": true
-              },
-              "icon": "links-going-out",
-              "title": "GoodQ 的出链列表"
             }
           },
           {
