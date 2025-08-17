@@ -1,0 +1,45 @@
+# format = '''
+# [╭─](bold blue) $hostname$os $directory $fill$python$git_branch 
+# [╰─>](bold blue) '''
+format = '''
+[╭─](bold blue) $hostname$os $directory $fill$python$git_branch
+[╰─>](bold blue) '''
+
+[hostname]
+ssh_only = false
+format = '[$hostname](bold red) '
+disabled = false
+
+[os]
+format = '$symbol'
+style = "bold blue"
+disabled = false
+[os.symbols]
+Windows = " "
+Arch = "[ ](blod blue)"
+FreeBSD = "[󰱯 ](red)"
+Gentoo = " "
+[python]
+symbol = ''
+pyenv_version_name = true
+format = ' [${symbol} (\($virtualenv\) )]($style)'
+
+
+[shell]
+fish_indicator = '󰈺 '
+powershell_indicator = '_'
+unknown_indicator = 'mystery shell'
+style = 'cyan bold'
+disabled = false
+
+[fill]
+symbol = ' '
+
+[directory]
+truncation_length = 12
+truncation_symbol = '…/'
+read_only = "  "
+
+[cmd_duration]
+min_time = 500
+format = '[$duration](bold yellow)'

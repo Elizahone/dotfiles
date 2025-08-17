@@ -1,0 +1,45 @@
+[pyprland]
+plugins = [
+  "scratchpads",
+  "expose",
+  "layout_center",
+  "fetch_client_menu"
+]
+
+[scratchpads.term]
+animation = "fromTop"
+command = "kitty --class kitty-dropterm"
+class = "kitty-dropterm"
+size = "50% 40%"
+max_size = "1920px 100%"
+margin = 50
+unfocus = "hide"
+lazy = true
+
+[scratchpads.volume]
+animation = "fromRight"
+command = "pavucontrol"
+class = "pavucontrol"
+size = "20% 50%"
+position = "1% 5%"
+unfocus = "hide"
+lazy = true
+
+
+# ---------------------------------------------------------------------------
+
+[expose]
+include_special = false
+
+[layout_center]
+margin = 60
+offset = [0, 30]
+next = "movefocus r"
+prev = "movefocus l"
+next2 = "movefocus d"
+prev2 = "movefocus u"
+
+[fetch_client_menu]
+engine = "tofi"
+
+
