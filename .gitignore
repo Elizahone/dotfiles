@@ -1,6 +1,4 @@
-emacs/auto-save-list/
-emacs/elpa/
-emacs/tree-sitter/
-emacs/places
-emacs/.org-id-locations
-emacs/custom.el
+
+
+# emacs
+/.emacs.d/*
