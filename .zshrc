@@ -191,8 +191,7 @@ alias ls="lsd -F"
 alias ll="lsd -alF"
 alias tree="lsd --tree --depth=3"
 
-if uwsm check may-start && uwsm select; then
+if uwsm check may-start 1>/dev/null && uwsm select; then
 	exec uwsm start default
 fi
-
 eval "$(starship init zsh)"
