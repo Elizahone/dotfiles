@@ -177,6 +177,22 @@ function cd() {
 }
 
 
+function proxy () {
+    case "$1" in
+        "set") 
+            export https_proxy=127.0.0.1:7890
+            export http_proxy=127.0.0.1:7890
+        ;;
+        "unset") unset https_proxy http_proxy
+        ;;
+    *) echo "[USAGE] 
+        proxy set      : set proxy enviroment variables (http_proxy & https_proxy)
+        proxy unset    : unset those variables above"
+        ;;
+    esac
+    
+}
+
 function e() {
   str=$@
   if [[ "$str" == .* ]]; then
@@ -194,4 +210,3 @@ alias tree="lsd --tree --depth=3"
 if uwsm check may-start 1>/dev/null && uwsm select; then
 	exec uwsm start default
 fi
-eval "$(starship init zsh)"
