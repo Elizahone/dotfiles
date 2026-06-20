@@ -1,0 +1,9 @@
+
+
+# emacs
+.emacs.d/*
+!.emacs.d/lisp/
+!.emacs.d/*.el
+!.emacs.d/snippets/
+
+.config/tmux/plugins/

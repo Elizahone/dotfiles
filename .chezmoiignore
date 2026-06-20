@@ -1,0 +1,9 @@
+*.org
+*.md
+*.txt
+
+wallpaper/
+wallpaper/**
+
+templates/
+templates/**
