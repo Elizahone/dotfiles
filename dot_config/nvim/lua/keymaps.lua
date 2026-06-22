@@ -8,9 +8,15 @@ vim.keymap.set("n", "k", function()
     return vim.v.count == 0 and "gk" or "k"
 end, { expr = true, silent = true, desc = "Up (wrap-aware)" })
 
+
+-- change the macor key, cause it's sick
+vim.keymap.set({"n", "x"}, "q", "<Nop>")
+vim.keymap.set({"n", "x"}, "<C-m>", "q") -- record a macor
+
+
 vim.keymap.set("n", "<leader>c", ":nohlsearch<CR>", { desc = "Clear search highlights" })
 
-vim.keymap.set("x", "p", [["_dP]], { desc = "Paste over selection without losing yanked text" })
+vim.keymap.set("x", "p", [["_dP]], { noremap = true, desc = "Paste over selection without losing yanked text" })
 vim.keymap.set({"x", "n"}, "x", [["_x]], { desc = "delte a char without losing yanked text" })
 
 vim.keymap.set({ "n", "v" }, "<leader>d", [["_d]], { desc = "Delete without yanking" })

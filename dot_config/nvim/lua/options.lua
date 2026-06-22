@@ -35,7 +35,8 @@ vim.opt.concealcursor = "" -- do not hide cursorline in markup
 vim.opt.lazyredraw = true -- do not redraw during macros
 vim.opt.synmaxcol = 300 -- syntax highlighting limit
 
-local undodir = vim.fn.stdpath("data") .. "/undodir"
+-- local undodir = vim.fn.stdpath("data") .. "/undodir"
+local undodir = "/tmp/neovim-undodir"
 if
     vim.fn.isdirectory(undodir) == 0 -- create undodir if nonexistent
 then
