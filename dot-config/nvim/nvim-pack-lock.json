@@ -13,10 +13,6 @@
       "rev": "dd3e952076a33faba0a55b04b2b73945832c0527",
       "src": "https://github.com/ej-shafran/compile-mode.nvim"
     },
-    "dracula.nvim": {
-      "rev": "ae752c13e95fb7c5f58da4b5123cb804ea7568ee",
-      "src": "https://github.com/Mofiqul/dracula.nvim"
-    },
     "gruvbox": {
       "rev": "154eb5ff5b96d0641307113fa385eaf0d36d9796",
       "src": "https://github.com/ellisonleao/gruvbox.nvim"
@@ -62,10 +58,6 @@
     "oil.nvim": {
       "rev": "b73018b75affd13fa38e2fc94ef753b465f770d7",
       "src": "https://github.com/stevearc/oil.nvim"
-    },
-    "overseer.nvim": {
-      "rev": "a93d9f6d6defdac4bcd6d2c8ba988650e42e0a0e",
-      "src": "https://github.com/stevearc/overseer.nvim"
     },
     "plenary.nvim": {
       "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",

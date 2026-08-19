@@ -14,7 +14,31 @@ function _G.get_oil_winbar()
 end
 
 require("oil").setup({
+  columns = {
+    "icon",
+    "permissions",
+    "size",
+    -- "mtime",
+  },
   win_options = {
     winbar = "%!v:lua.get_oil_winbar()",
   },
 })
+
+if vim.env.NVIM_CD_TMP then
+    vim.api.nvim_create_autocmd("VimLeavePre", {
+        callback = function()
+            local ok, oil = pcall(require, "oil")
+            local dir
+            if ok then
+                dir = oil.get_current_dir()
+            end
+            if not dir then
+                dir = vim.fn.getcwd()
+            end
+            if dir then
+                vim.fn.writefile({dir}, vim.env.NVIM_CD_TMP)
+            end
+        end,
+        })
+end

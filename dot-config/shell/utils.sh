@@ -28,3 +28,8 @@ function elzh_proxy() {
             ;;
     esac
 }
+
+function ncd() {
+    NVIM_CD_TMP=/tmp/nvim_cd nvim "$@"
+    cd $(cat /tmp/nvim_cd)
+}
