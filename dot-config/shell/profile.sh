@@ -1,6 +1,6 @@
 #!/bin/sh
 
-[ -d "$HOME/.local/bin" ] && PATH="${PATH}:$HOME/.local/bin"
+[ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:${PATH}"
 
 
 # environment variables

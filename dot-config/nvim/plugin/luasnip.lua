@@ -3,15 +3,32 @@ vim.pack.add({
 })
 
 local ls = require("luasnip")
+ls.setup({ -- Setting LuaSnip config
 
-vim.keymap.set({"i"}, "<C-Z>", function() ls.expand() end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
-vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
+    -- Enable autotriggered snippets
+    enable_autosnippets = true,
 
-vim.keymap.set({"i", "s"}, "<C-E>", function()
-    if ls.choice_active() then
-        ls.change_choice(1)
-    end
-end, {silent = true})
+    -- Use Tab (or some other key if you prefer) to trigger visual selection
+    store_selection_keys = "<Tab>",
+    update_events = "TextChanged,TextChangedI",
+    delete_check_events = "TextChanged",
+})
+
+vim.cmd[[
+    " Expand or jump in insert mode
+    imap <silent><expr> <Tab> luasnip#expand_or_jumpable() ? '<Plug>luasnip-expand-or-jump' : '<Tab>'
+
+    " Jump forward through tabstops in visual mode
+    smap <silent><expr> <Tab> luasnip#jumpable(1) ? '<Plug>luasnip-jump-next' : '<Tab>'
+
+    " Jump backward through snippet tabstops with Shift-Tab (for example)
+    imap <silent><expr> <S-Tab> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<S-Tab>'
+    smap <silent><expr> <S-Tab> luasnip#jumpable(-1) ? '<Plug>luasnip-jump-prev' : '<S-Tab>'
+
+    " Cycle forward through choice nodes with Control-f (for example)
+    "imap <silent><expr> <C-f> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-f>'"
+    "smap <silent><expr> <C-f> luasnip#choice_active() ? '<Plug>luasnip-next-choice' : '<C-f>'"
+]]
 
 require("luasnip.loaders.from_lua").lazy_load({ paths = "~/.config/nvim/LuaSnip/" })
+

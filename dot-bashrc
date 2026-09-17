@@ -107,7 +107,5 @@ fi
 [ -f $HOME/.config/shell/prompt.sh ] && . $HOME/.config/shell/prompt.sh
 [ -f $HOME/.config/shell/utils.sh ] && . $HOME/.config/shell/utils.sh
 
-
-
-# [ -f ~/.config/shell/prompt.sh ]; . ~/.config/shell/prompt.sh
+[ -f $HOME/.machine_specification.sh ] && . $HOME/.machine_specification.sh
 

@@ -9,9 +9,21 @@ local fmt = require("luasnip.extras.fmt").fmt
 local fmta = require("luasnip.extras.fmt").fmta
 local rep = require("luasnip.extras").re
 
+local get_visual = function(args, parent)
+  if (#parent.snippet.env.LS_SELECT_RAW > 0) then
+    return sn(nil, i(1, parent.snippet.env.LS_SELECT_RAW))
+  else  -- If LS_SELECT_RAW is empty, return a blank insert node
+    return sn(nil, i(1))
+  end
+end
+
 return {
   -- Shorthand
-  s("hi",  -- LuaSnip expands this to {trig = "hi"}
-    { t("Hello, world!"), }
-  ),
+    s({trig = [[""]], dscr = "Expands 'tii' into LaTeX's textit{} command."},
+      fmta([["<>"]],
+        {
+          d(1, get_visual),
+        }
+      )
+    ),
 }
